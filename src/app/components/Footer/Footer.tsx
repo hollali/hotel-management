@@ -1,5 +1,6 @@
 import Link from "next/link";
-import {BsFillSendFill} from "react-icons/bs"
+import {BsFillSendFill, BsTelephoneOutbound} from "react-icons/bs"
+import {BiMessageDetail} from "react-icons/bi"
 const Footer = () => {
     return (
         <footer className="mt-16">
@@ -16,6 +17,28 @@ const Footer = () => {
                             <BsFillSendFill />
                             <p className="ml-2">Hollali</p>
                         </div>
+                        <div className="flex items-center">
+                            <BsTelephoneOutbound />
+                            <p className="ml-2">+233 0243658631</p>
+                        </div>
+                        <div className="flex items-center pt-4">
+                            <BiMessageDetail />
+                            <p className="ml-2">Hollali</p>
+                        </div>
+                    </div>
+                    <div className="flex-1 md:text-right">
+                        <p className="pb-4">Our Story</p>
+                        <p className="pb-4">Get in Touch</p>
+                        <p className="pb-4">Our Privacy</p>
+                        <p className="pb-4">Terms of Service</p>
+                        <p>Customer Support</p>
+                    </div>
+                    <div className="flex-1 md:text-right">
+                    <p className="pb-4">Dinning Experience</p>
+                    <p className="pb-4">Wellness</p>
+                    <p className="pb-4">Fitness</p>
+                    <p className="pb-4">Sports</p>
+                    <p>Events</p>
                     </div>
                 </div>
             </div>
