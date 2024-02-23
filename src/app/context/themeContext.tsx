@@ -4,9 +4,9 @@ type ThemeContextType = {
     darkTheme: boolean;
     setDarkTheme: Dispatch<SetStateAction<boolean>>;
 };
-const themeContext = createContext<ThemeContextType>({
+const ThemeContext = createContext<ThemeContextType>({
     darkTheme: false,
     setDarkTheme: () => null,
 });
 
-export default themeContext;
+export default ThemeContext;
