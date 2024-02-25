@@ -1,6 +1,6 @@
 # Hotel Management System
 
-This is a full-stack web application for managing a hotel's operations, built using Next.js, React, TypeScript, and Sanity.io.
+This is a full-stack web application for managing a hotel's operations, built using Next.js, React, TypeScript, Sanity.io, Tailwind CSS, and Stripe.
 
 ## Features
 
@@ -11,6 +11,7 @@ This is a full-stack web application for managing a hotel's operations, built us
 - **Staff Management:** Manage staff accounts, roles, and permissions.
 - **Billing and Invoicing:** Generate and manage invoices for room bookings and additional services.
 - **Reports:** Generate and view reports on occupancy rates, revenue, and other key metrics.
+- **Payment Processing:** Accept online payments for room reservations and services using Stripe.
 
 ## Technologies Used
 
@@ -19,7 +20,7 @@ This is a full-stack web application for managing a hotel's operations, built us
   - React: JavaScript library for building user interfaces.
   - TypeScript: Typed superset of JavaScript for improved code quality and maintainability.
   - Tailwind CSS: Utility-first CSS framework for styling the UI.
-  - Sanity.io: Headless CMS for managing content.
+  - Stripe: Payment processing platform for accepting online payments.
 
 - **Backend:**
   - Node.js: JavaScript runtime environment.
@@ -32,7 +33,11 @@ This is a full-stack web application for managing a hotel's operations, built us
 1. **Clone the repository:**
    ```bash
    git clone https://github.com/yourusername/hotel-management.git
-   
+
+    Install dependencies:
+
+    bash
+
 cd hotel-management
 npm install
 
@@ -42,7 +47,17 @@ Set up Sanity.io:
     Follow the instructions to set up your schema and populate initial data.
     Update the .env.local file with your Sanity.io project ID and dataset name.
 
-npm run dev
+Set up Stripe:
+
+    Create a Stripe account (https://stripe.com/)
+    Obtain your Stripe API keys (publishable and secret) from the Stripe dashboard.
+    Update the .env.local file with your Stripe API keys.
+
+Start the development server:
+
+bash
+
+    npm run dev
 
     Open the web application:
     Visit http://localhost:3000 in your web browser to access the hotel management system.
@@ -73,7 +88,5 @@ License
 
 This project is licensed under the MIT License.
 
-css
-
-
-Feel free to customize this README file according to your specific project requirement
+python
+Please note that you'll need to set up Stripe integration in your application according to Stripe's documentation to enable payment processing functionality.
