@@ -32,7 +32,7 @@ This is a full-stack web application for managing a hotel's operations, built us
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/yourusername/hotel-management.git
+   git clone https://github.com/hollali/hotel-management.git
 
     Install dependencies:
 
