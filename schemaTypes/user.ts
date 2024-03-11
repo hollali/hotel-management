@@ -6,10 +6,10 @@ const user = {
     types: 'document',
     fields: [
         defineField({
-            name: "isAdmin",
-            title : "Is Admin",
-            type: "boolean",
-            description: "Check if the user is admin",
+            name: 'isAdmin',
+            title : 'Is Admin',
+            type: 'boolean',
+            description: 'Check if the user is admin',
             initialValue: false,
             validation: Rule => Rule.required(),
             //  readOnly: true,
@@ -38,7 +38,7 @@ const user = {
             title: "About",
             type: "text",
             description: "A brief description about the user"
-        })
+        }),
     ],
 };
 
