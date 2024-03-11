@@ -12,6 +12,8 @@ const user = ({
         description: 'Check if the user is admin',
         initialValue: false,
         validation: Rule => Rule.required(),
+        // readOnly: true,
+        // hidden : true,
     }),
     defineField({
         name: 'name',
