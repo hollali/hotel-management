@@ -29,6 +29,12 @@ const account = {
             name: 'accessTokenExpires',
             type: 'number',
         }),
+        defineField({
+            name: 'user',
+            title: 'user',
+            type: 'reference',
+            to: {type: 'user' },
+        })
     ],
 };
 
