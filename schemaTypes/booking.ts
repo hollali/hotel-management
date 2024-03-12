@@ -1,3 +1,5 @@
-const booking = {}
+const booking = {
+    
+}
 
 export default booking;
