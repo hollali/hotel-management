@@ -84,7 +84,7 @@ const Auth = () => {
 						Sign up
 					</button>
 				</form>
-				<button className="text-blue-700 underline-none text-center">
+				<button className="text-teal-500 underline-none text-center">
 					login
 				</button>
 			</div>
