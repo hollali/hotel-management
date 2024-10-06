@@ -1,5 +1,3 @@
-import { Basic } from "next/font/google";
-import { Rule } from "postcss";
 import { defineField } from "sanity";
 
 const roomTypes = [
