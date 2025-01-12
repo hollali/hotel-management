@@ -56,7 +56,6 @@ const Auth = () => {
 						value={formData.name}
 						onChange={handleInputChange}
 					/>
-
 					<input
 						type="email"
 						name="email"
@@ -66,7 +65,6 @@ const Auth = () => {
 						value={formData.email}
 						onChange={handleInputChange}
 					/>
-
 					<input
 						type="password"
 						name="password"
@@ -77,7 +75,6 @@ const Auth = () => {
 						value={formData.password}
 						onChange={handleInputChange}
 					/>
-
 					<button
 						type="submit"
 						className="w-full bg-tertiary-dark focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center">
