@@ -13,7 +13,7 @@ const Header = () => {
 
   return (
     <header className="py-6 px-4 container mx-auto flex items-center justify-between relative">
-      {/* Left: Hamburger (mobile only) */}
+      {/* Mobile: Hamburger Left */}
       <button
         className="md:hidden text-2xl z-50"
         onClick={() => setMenuOpen(!menuOpen)}
@@ -22,7 +22,7 @@ const Header = () => {
         {menuOpen ? <FaTimes /> : <FaBars />}
       </button>
 
-      {/* Center: Logo */}
+      {/* Logo: Center on mobile, Left on desktop */}
       <Link
         href="/"
         className="font-black text-xl text-tertiary-light absolute left-1/2 transform -translate-x-1/2 md:static md:transform-none"
@@ -30,8 +30,21 @@ const Header = () => {
         SKY
       </Link>
 
-      {/* Right: User + Theme Toggle (mobile & desktop) */}
-      <div className="flex items-center space-x-3">
+      {/* Desktop Nav: Center */}
+      <ul className="hidden md:flex items-center justify-center flex-1 space-x-8">
+        <li className="hover:translate-y-1 duration-300 transition-all">
+          <Link href="/">Home</Link>
+        </li>
+        <li className="hover:translate-y-1 duration-300 transition-all">
+          <Link href="/rooms">Rooms</Link>
+        </li>
+        <li className="hover:translate-y-1 duration-300 transition-all">
+          <Link href="/contacts">Contacts</Link>
+        </li>
+      </ul>
+
+      {/* Right: Icons */}
+      <div className="flex items-center space-x-3 ml-auto">
         <Link href="/auth">
           <FaUserCircle className="cursor-pointer text-xl md:text-2xl" />
         </Link>
@@ -53,19 +66,6 @@ const Header = () => {
           />
         )}
       </div>
-
-      {/* Desktop Nav */}
-      <ul className="hidden md:flex items-center justify-between w-1/3">
-        <li className="hover:translate-y-1 duration-300 transition-all">
-          <Link href="/">Home</Link>
-        </li>
-        <li className="hover:translate-y-1 duration-300 transition-all">
-          <Link href="/rooms">Rooms</Link>
-        </li>
-        <li className="hover:translate-y-1 duration-300 transition-all">
-          <Link href="/contacts">Contacts</Link>
-        </li>
-      </ul>
 
       {/* Mobile Nav Menu */}
       {menuOpen && (
