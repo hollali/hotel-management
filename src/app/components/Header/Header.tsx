@@ -70,25 +70,25 @@ const Header = () => {
 
       {/* Mobile Nav Menu */}
       {menuOpen && (
-        <div className="absolute top-0 left-0 w-full h-screen bg-white dark:bg-gray-900 flex flex-col items-center justify-center space-y-8 text-xl z-40">
+        <div className="absolute top-0 left-0 w-full h-screen bg-white dark:bg-black flex flex-col items-center justify-center space-y-8 text-xl z-40">
           <Link
             href="/"
             onClick={() => setMenuOpen(false)}
-            className="hover:text-blue-500"
+            className="hover:text-gray-500"
           >
             Home
           </Link>
           <Link
             href="/rooms"
             onClick={() => setMenuOpen(false)}
-            className="hover:text-blue-500"
+            className="hover:text-gray-500"
           >
             Rooms
           </Link>
           <Link
             href="/contacts"
             onClick={() => setMenuOpen(false)}
-            className="hover:text-blue-500"
+            className="hover:text-gray-500"
           >
             Contacts
           </Link>
