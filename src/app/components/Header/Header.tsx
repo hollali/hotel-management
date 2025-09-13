@@ -13,37 +13,45 @@ const Header = () => {
 
   return (
     <header className="py-6 px-4 container mx-auto flex items-center justify-between relative">
-      {/* Left: Logo + Icons */}
-      <div className="flex items-center w-full md:w-2/3">
-        <Link href="/" className="font-black text-xl text-tertiary-light">
-          SKY
+      {/* Left: Hamburger (mobile only) */}
+      <button
+        className="md:hidden text-2xl z-50"
+        onClick={() => setMenuOpen(!menuOpen)}
+        aria-label="Toggle menu"
+      >
+        {menuOpen ? <FaTimes /> : <FaBars />}
+      </button>
+
+      {/* Center: Logo */}
+      <Link
+        href="/"
+        className="font-black text-xl text-tertiary-light absolute left-1/2 transform -translate-x-1/2 md:static md:transform-none"
+      >
+        SKY
+      </Link>
+
+      {/* Right: User + Theme Toggle (mobile & desktop) */}
+      <div className="flex items-center space-x-3">
+        <Link href="/auth">
+          <FaUserCircle className="cursor-pointer text-xl md:text-2xl" />
         </Link>
-        <ul className="hidden md:flex items-center ml-5">
-          <li className="flex items-center">
-            <Link href="/auth">
-              <FaUserCircle className="cursor-pointer text-xl" />
-            </Link>
-          </li>
-          <li className="ml-3">
-            {darkTheme ? (
-              <MdOutlineLightMode
-                className="cursor-pointer text-xl"
-                onClick={() => {
-                  setDarkTheme(false);
-                  localStorage.removeItem("hotel-theme");
-                }}
-              />
-            ) : (
-              <MdDarkMode
-                className="cursor-pointer text-xl"
-                onClick={() => {
-                  setDarkTheme(true);
-                  localStorage.setItem("hotel-theme", "true");
-                }}
-              />
-            )}
-          </li>
-        </ul>
+        {darkTheme ? (
+          <MdOutlineLightMode
+            className="cursor-pointer text-xl md:text-2xl"
+            onClick={() => {
+              setDarkTheme(false);
+              localStorage.removeItem("hotel-theme");
+            }}
+          />
+        ) : (
+          <MdDarkMode
+            className="cursor-pointer text-xl md:text-2xl"
+            onClick={() => {
+              setDarkTheme(true);
+              localStorage.setItem("hotel-theme", "true");
+            }}
+          />
+        )}
       </div>
 
       {/* Desktop Nav */}
@@ -58,15 +66,6 @@ const Header = () => {
           <Link href="/contacts">Contacts</Link>
         </li>
       </ul>
-
-      {/* Mobile Menu Button */}
-      <button
-        className="md:hidden text-2xl z-50"
-        onClick={() => setMenuOpen(!menuOpen)}
-        aria-label="Toggle menu"
-      >
-        {menuOpen ? <FaTimes /> : <FaBars />}
-      </button>
 
       {/* Mobile Nav Menu */}
       {menuOpen && (
@@ -92,28 +91,6 @@ const Header = () => {
           >
             Contacts
           </Link>
-          <div className="flex space-x-4 mt-6">
-            <Link href="/auth">
-              <FaUserCircle className="cursor-pointer text-2xl" />
-            </Link>
-            {darkTheme ? (
-              <MdOutlineLightMode
-                className="cursor-pointer text-2xl"
-                onClick={() => {
-                  setDarkTheme(false);
-                  localStorage.removeItem("hotel-theme");
-                }}
-              />
-            ) : (
-              <MdDarkMode
-                className="cursor-pointer text-2xl"
-                onClick={() => {
-                  setDarkTheme(true);
-                  localStorage.setItem("hotel-theme", "true");
-                }}
-              />
-            )}
-          </div>
         </div>
       )}
     </header>
