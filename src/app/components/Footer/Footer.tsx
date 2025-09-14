@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BsFillSendFill, BsTelephoneOutbound } from "react-icons/bs";
+import { BsFillSendFill, BsMapFill, BsTelephoneOutbound } from "react-icons/bs";
 import { BiMessageDetail } from "react-icons/bi";
 
 const Footer = () => {
@@ -23,7 +23,10 @@ const Footer = () => {
         <div className="flex flex-wrap gap-10 md:gap-16 items-start justify-between text-gray-600 dark:text-gray-300">
           {/* Contact Section */}
           <div className="flex-1 min-w-[220px]">
-            <p className="mb-2">Accra, Ghana</p>
+            <div className="flex items-center py-2">
+              <BsMapFill className="text-tertiary-light" />
+              <p className="mb-2">Accra, Ghana</p>
+            </div>
             <div className="flex items-center py-2">
               <BsFillSendFill className="text-tertiary-light" />
               <p className="ml-2">Hollali</p>
