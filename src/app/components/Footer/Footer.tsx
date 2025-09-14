@@ -25,7 +25,7 @@ const Footer = () => {
           <div className="flex-1 min-w-[220px]">
             <div className="flex items-center py-2">
               <BsMapFill className="text-tertiary-light" />
-              <p className="mb-2">Accra, Ghana</p>
+              <p className="ml-2">Accra, Ghana</p>
             </div>
             <div className="flex items-center py-2">
               <BsFillSendFill className="text-tertiary-light" />
