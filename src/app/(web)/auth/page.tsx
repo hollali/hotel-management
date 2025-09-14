@@ -4,6 +4,8 @@ import React, { ChangeEvent, FormEvent } from "react";
 import { useState } from "react";
 import { AiFillGithub } from "react-icons/ai";
 import { FcGoogle } from "react-icons/fc";
+import { signUp } from "next-auth-sanity/client";
+import { signIn, useSession } from "next-auth/react";
 
 const defaultFormData = {
   name: "",
@@ -25,7 +27,7 @@ const Auth = () => {
     event.preventDefault();
 
     try {
-      console.log(formData);
+      const user = await signUp(formData);
     } catch (error) {
       console.log(error);
     } finally {
