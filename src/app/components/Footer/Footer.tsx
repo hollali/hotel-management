@@ -80,9 +80,9 @@ const Footer = () => {
       </div>
 
       {/* Bottom Bar */}
-      <div className="bg-tertiary-light h-12 md:h-[70px] w-full flex items-center justify-center">
+      <div className="bg-tertiary-light dark:bg-tertiary-dark h-12 md:h-[70px] w-full flex items-center justify-center">
         <p className="text-white text-sm md:text-base">
-          © {new Date().getFullYear()} SKY. All rights reserved.
+          © {new Date().getFullYear()} SKY INN. All rights reserved.
         </p>
       </div>
     </footer>
