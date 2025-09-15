@@ -25,7 +25,7 @@ const Header = () => {
       {/* Logo: Center on mobile, Left on desktop */}
       <Link
         href="/"
-        className="font-black text-xl text-tertiary-light absolute left-1/2 transform -translate-x-1/2 md:static md:transform-none"
+        className="font-black text-xl text-tertiary-light   dark:text-tertiary-dark absolute left-1/2 transform -translate-x-1/2 md:static md:transform-none"
       >
         SKY
       </Link>

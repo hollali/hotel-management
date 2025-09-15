@@ -9,7 +9,7 @@ const Footer = () => {
         {/* Logo */}
         <Link
           href="/"
-          className="font-black text-tertiary-light text-2xl md:text-3xl"
+          className="font-black text-tertiary-light dark:text-tertiary-dark text-2xl md:text-3xl"
         >
           SKY
         </Link>
@@ -24,57 +24,59 @@ const Footer = () => {
           {/* Contact Section */}
           <div className="flex-1 min-w-[220px]">
             <div className="flex items-center py-2">
-              <BsMapFill className="text-tertiary-light" />
+              <BsMapFill className="text-tertiary-light dark:text-tertiary-dark" />
               <p className="ml-2">Accra, Ghana</p>
             </div>
             <div className="flex items-center py-2">
-              <BsFillSendFill className="text-tertiary-light" />
+              <BsFillSendFill className="text-tertiary-light dark:text-tertiary-dark" />
               <p className="ml-2">Hollali</p>
             </div>
             <div className="flex items-center py-2">
-              <BsTelephoneOutbound className="text-tertiary-light" />
+              <BsTelephoneOutbound className="text-tertiary-light dark:text-tertiary-dark" />
               <p className="ml-2">+233 0243658631</p>
             </div>
             <div className="flex items-center py-2">
-              <BiMessageDetail className="text-tertiary-light" />
+              <BiMessageDetail className="text-tertiary-light dark:text-tertiary-dark" />
               <p className="ml-2">Hollali</p>
             </div>
           </div>
 
           {/* Links 1 */}
           <div className="flex-1 min-w-[180px] md:text-right">
-            <p className="pb-2 hover:text-tertiary-light cursor-pointer">
+            <p className="pb-2 hover:text-tertiary-light dark:hover:text-tertiary-dark cursor-pointer">
               Our Story
             </p>
-            <p className="pb-2 hover:text-tertiary-light cursor-pointer">
+            <p className="pb-2 hover:text-tertiary-light dark:hover:text-tertiary-dark cursor-pointer">
               Get in Touch
             </p>
-            <p className="pb-2 hover:text-tertiary-light cursor-pointer">
+            <p className="pb-2 hover:text-tertiary-light dark:hover:text-tertiary-dark cursor-pointer">
               Our Privacy
             </p>
-            <p className="pb-2 hover:text-tertiary-light cursor-pointer">
+            <p className="pb-2 hover:text-tertiary-light dark:hover:text-tertiary-dark cursor-pointer">
               Terms of Service
             </p>
-            <p className="hover:text-tertiary-light cursor-pointer">
+            <p className="hover:text-tertiary-light  dark:hover:text-tertiary-dark cursor-pointer">
               Customer Support
             </p>
           </div>
 
           {/* Links 2 */}
           <div className="flex-1 min-w-[180px] md:text-right">
-            <p className="pb-2 hover:text-tertiary-light cursor-pointer">
+            <p className="pb-2 hover:text-tertiary-light dark:hover:text-tertiary-dark cursor-pointer">
               Dining Experience
             </p>
-            <p className="pb-2 hover:text-tertiary-light cursor-pointer">
+            <p className="pb-2 hover:text-tertiary-light  dark:hover:text-tertiary-dark cursor-pointer">
               Wellness
             </p>
-            <p className="pb-2 hover:text-tertiary-light cursor-pointer">
+            <p className="pb-2 hover:text-tertiary-light dark:hover:text-tertiary-dark cursor-pointer">
               Fitness
             </p>
-            <p className="pb-2 hover:text-tertiary-light cursor-pointer">
+            <p className="pb-2 hover:text-tertiary-light dark:hover:text-tertiary-dark cursor-pointer">
               Sports
             </p>
-            <p className="hover:text-tertiary-light cursor-pointer">Events</p>
+            <p className="hover:text-tertiary-light dark:hover:text-tertiary-dark cursor-pointer">
+              Events
+            </p>
           </div>
         </div>
       </div>
