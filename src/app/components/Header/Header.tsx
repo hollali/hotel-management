@@ -31,8 +31,8 @@ const Header = () => {
         <Image
           src="/skyinn.png" // save your Sky Inn logo in /public
           alt="Sky Inn Logo"
-          width={120}
-          height={50}
+          width={50}
+          height={20}
           className="object-contain"
           priority
         />

@@ -12,8 +12,8 @@ const Footer = () => {
           <Image
             src="/skyinn.png" // place your logo in the /public folder
             alt="Sky Inn Logo"
-            width={120}
-            height={60}
+            width={50}
+            height={20}
             className="object-contain"
             priority
           />
