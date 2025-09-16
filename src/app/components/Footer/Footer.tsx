@@ -10,7 +10,7 @@ const Footer = () => {
         {/* Logo */}
         <Link href="/" className="inline-block">
           <Image
-            src="/skyinn.png" // place your logo in the /public folder
+            src="/skyinn.png"
             alt="Sky Inn Logo"
             width={50}
             height={20}
@@ -28,60 +28,106 @@ const Footer = () => {
         <div className="flex flex-wrap gap-10 md:gap-16 items-start justify-between text-gray-600 dark:text-gray-300">
           {/* Contact Section */}
           <div className="flex-1 min-w-[220px]">
-            <div className="flex items-center py-2">
+            <Link
+              href="https://maps.google.com/?q=Accra,+Ghana"
+              target="_blank"
+              className="flex items-center py-2 hover:text-tertiary-light dark:hover:text-tertiary-dark"
+            >
               <BsMapFill className="text-tertiary-light dark:text-tertiary-dark" />
-              <p className="ml-2">Accra, Ghana</p>
-            </div>
-            <div className="flex items-center py-2">
+              <span className="ml-2">Accra, Ghana</span>
+            </Link>
+
+            <Link
+              href="mailto:hollali@example.com"
+              className="flex items-center py-2 hover:text-tertiary-light dark:hover:text-tertiary-dark"
+            >
               <BsFillSendFill className="text-tertiary-light dark:text-tertiary-dark" />
-              <p className="ml-2">Hollali</p>
-            </div>
-            <div className="flex items-center py-2">
+              <span className="ml-2">hollali@example.com</span>
+            </Link>
+
+            <Link
+              href="tel:+233243658631"
+              className="flex items-center py-2 hover:text-tertiary-light dark:hover:text-tertiary-dark"
+            >
               <BsTelephoneOutbound className="text-tertiary-light dark:text-tertiary-dark" />
-              <p className="ml-2">+233 0243658631</p>
-            </div>
-            <div className="flex items-center py-2">
+              <span className="ml-2">+233 0243658631</span>
+            </Link>
+
+            <Link
+              href="/contact"
+              className="flex items-center py-2 hover:text-tertiary-light dark:hover:text-tertiary-dark"
+            >
               <BiMessageDetail className="text-tertiary-light dark:text-tertiary-dark" />
-              <p className="ml-2">Hollali</p>
-            </div>
+              <span className="ml-2">Chat with us</span>
+            </Link>
           </div>
 
           {/* Links 1 */}
           <div className="flex-1 min-w-[180px] md:text-right">
-            <p className="pb-2 hover:text-tertiary-light dark:hover:text-tertiary-dark cursor-pointer">
+            <Link
+              href="/our-story"
+              className="block pb-2 hover:text-tertiary-light dark:hover:text-tertiary-dark"
+            >
               Our Story
-            </p>
-            <p className="pb-2 hover:text-tertiary-light dark:hover:text-tertiary-dark cursor-pointer">
+            </Link>
+            <Link
+              href="/contact"
+              className="block pb-2 hover:text-tertiary-light dark:hover:text-tertiary-dark"
+            >
               Get in Touch
-            </p>
-            <p className="pb-2 hover:text-tertiary-light dark:hover:text-tertiary-dark cursor-pointer">
+            </Link>
+            <Link
+              href="/privacy"
+              className="block pb-2 hover:text-tertiary-light dark:hover:text-tertiary-dark"
+            >
               Our Privacy
-            </p>
-            <p className="pb-2 hover:text-tertiary-light dark:hover:text-tertiary-dark cursor-pointer">
+            </Link>
+            <Link
+              href="/terms"
+              className="block pb-2 hover:text-tertiary-light dark:hover:text-tertiary-dark"
+            >
               Terms of Service
-            </p>
-            <p className="hover:text-tertiary-light  dark:hover:text-tertiary-dark cursor-pointer">
+            </Link>
+            <Link
+              href="/support"
+              className="block hover:text-tertiary-light dark:hover:text-tertiary-dark"
+            >
               Customer Support
-            </p>
+            </Link>
           </div>
 
           {/* Links 2 */}
           <div className="flex-1 min-w-[180px] md:text-right">
-            <p className="pb-2 hover:text-tertiary-light dark:hover:text-tertiary-dark cursor-pointer">
+            <Link
+              href="/dining"
+              className="block pb-2 hover:text-tertiary-light dark:hover:text-tertiary-dark"
+            >
               Dining Experience
-            </p>
-            <p className="pb-2 hover:text-tertiary-light  dark:hover:text-tertiary-dark cursor-pointer">
+            </Link>
+            <Link
+              href="/wellness"
+              className="block pb-2 hover:text-tertiary-light dark:hover:text-tertiary-dark"
+            >
               Wellness
-            </p>
-            <p className="pb-2 hover:text-tertiary-light dark:hover:text-tertiary-dark cursor-pointer">
+            </Link>
+            <Link
+              href="/fitness"
+              className="block pb-2 hover:text-tertiary-light dark:hover:text-tertiary-dark"
+            >
               Fitness
-            </p>
-            <p className="pb-2 hover:text-tertiary-light dark:hover:text-tertiary-dark cursor-pointer">
+            </Link>
+            <Link
+              href="/sports"
+              className="block pb-2 hover:text-tertiary-light dark:hover:text-tertiary-dark"
+            >
               Sports
-            </p>
-            <p className="hover:text-tertiary-light dark:hover:text-tertiary-dark cursor-pointer">
+            </Link>
+            <Link
+              href="/events"
+              className="block hover:text-tertiary-light dark:hover:text-tertiary-dark"
+            >
               Events
-            </p>
+            </Link>
           </div>
         </div>
       </div>
