@@ -7,10 +7,13 @@ import { FaUserCircle, FaBars, FaTimes } from "react-icons/fa";
 import { MdDarkMode, MdOutlineLightMode } from "react-icons/md";
 
 import ThemeContext from "@/app/context/themeContext";
+import { useSession } from "next-auth/react";
 
 const Header = () => {
   const { darkTheme, setDarkTheme } = useContext(ThemeContext);
   const [menuOpen, setMenuOpen] = useState(false);
+  const { data: session } = useSession();
+  console.log(session);
 
   return (
     <header className="py-6 px-4 container mx-auto flex items-center justify-between relative">

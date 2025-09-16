@@ -1,12 +1,13 @@
 "use client";
 
-import React, { ChangeEvent, FormEvent } from "react";
+import React, { ChangeEvent, FormEvent, useEffect } from "react";
 import { useState } from "react";
 import { AiFillGithub } from "react-icons/ai";
 import { FcGoogle } from "react-icons/fc";
 import { signUp } from "next-auth-sanity/client";
 import { signIn, useSession } from "next-auth/react";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 const defaultFormData = {
   name: "",
@@ -25,11 +26,16 @@ const Auth = () => {
   };
 
   const { data: session } = useSession();
-  console.log(session);
+  const router = useRouter();
+  useEffect(() => {
+    if (session) router.push("/");
+  }, [session, router]);
+
   const loginHandler = async () => {
     try {
       await signIn();
-      //? navigate to the dashboard
+      //* navigate to the dashboard
+      router.push("/");
     } catch (error) {
       console.log(error);
       toast.error("Something went wrong");
