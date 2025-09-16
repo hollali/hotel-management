@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useContext, useState } from "react";
 import { FaUserCircle, FaBars, FaTimes } from "react-icons/fa";
 import { MdDarkMode, MdOutlineLightMode } from "react-icons/md";
@@ -25,9 +26,16 @@ const Header = () => {
       {/* Logo: Center on mobile, Left on desktop */}
       <Link
         href="/"
-        className="font-black text-xl text-tertiary-light   dark:text-tertiary-dark absolute left-1/2 transform -translate-x-1/2 md:static md:transform-none"
+        className="absolute left-1/2 transform -translate-x-1/2 md:static md:transform-none"
       >
-        SKY
+        <Image
+          src="/skyinn.png" // save your Sky Inn logo in /public
+          alt="Sky Inn Logo"
+          width={120}
+          height={50}
+          className="object-contain"
+          priority
+        />
       </Link>
 
       {/* Desktop Nav: Center */}

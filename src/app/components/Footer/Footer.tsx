@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { BsFillSendFill, BsMapFill, BsTelephoneOutbound } from "react-icons/bs";
 import { BiMessageDetail } from "react-icons/bi";
 
@@ -7,11 +8,15 @@ const Footer = () => {
     <footer className="mt-16 bg-gray-50 dark:bg-black">
       <div className="container mx-auto px-4 py-10">
         {/* Logo */}
-        <Link
-          href="/"
-          className="font-black text-tertiary-light dark:text-tertiary-dark text-2xl md:text-3xl"
-        >
-          SKY
+        <Link href="/" className="inline-block">
+          <Image
+            src="/skyinn.png" // place your logo in the /public folder
+            alt="Sky Inn Logo"
+            width={120}
+            height={60}
+            className="object-contain"
+            priority
+          />
         </Link>
 
         {/* Title */}
