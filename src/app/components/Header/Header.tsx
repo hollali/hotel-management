@@ -5,19 +5,17 @@ import Image from "next/image";
 import { useContext, useState } from "react";
 import { FaUserCircle, FaBars, FaTimes } from "react-icons/fa";
 import { MdDarkMode, MdOutlineLightMode } from "react-icons/md";
+import { useUser, SignInButton, SignOutButton } from "@clerk/nextjs";
 
 import ThemeContext from "@/app/context/themeContext";
-import { useSession } from "next-auth/react";
 
 const Header = () => {
   const { darkTheme, setDarkTheme } = useContext(ThemeContext);
   const [menuOpen, setMenuOpen] = useState(false);
-  const { data: session } = useSession();
-  console.log(session);
+  const { isSignedIn, user } = useUser();
 
   return (
     <header className="py-6 px-4 container mx-auto flex items-center justify-between relative">
-      {/* Mobile: Hamburger Left */}
       <button
         className="md:hidden text-2xl z-50"
         onClick={() => setMenuOpen(!menuOpen)}
@@ -26,13 +24,12 @@ const Header = () => {
         {menuOpen ? <FaTimes /> : <FaBars />}
       </button>
 
-      {/* Logo: Center on mobile, Left on desktop */}
       <Link
         href="/"
         className="absolute left-1/2 transform -translate-x-1/2 md:static md:transform-none"
       >
         <Image
-          src="/skyinn.png" // save your Sky Inn logo in /public
+          src="/skyinn.png"
           alt="Sky Inn Logo"
           width={50}
           height={20}
@@ -41,7 +38,6 @@ const Header = () => {
         />
       </Link>
 
-      {/* Desktop Nav: Center */}
       <ul className="hidden md:flex items-center justify-center flex-1 space-x-8">
         <li className="hover:translate-y-1 duration-300 transition-all">
           <Link href="/">Home</Link>
@@ -52,13 +48,40 @@ const Header = () => {
         <li className="hover:translate-y-1 duration-300 transition-all">
           <Link href="/contacts">Contacts</Link>
         </li>
+        {isSignedIn && (
+          <li className="hover:translate-y-1 duration-300 transition-all">
+            <Link href="/dashboard">Dashboard</Link>
+          </li>
+        )}
       </ul>
 
-      {/* Right: Icons */}
       <div className="flex items-center space-x-3 ml-auto">
-        <Link href="/auth">
-          <FaUserCircle className="cursor-pointer text-xl md:text-2xl" />
-        </Link>
+        {isSignedIn ? (
+          <div className="flex items-center space-x-3">
+            <Link href="/dashboard">
+              {user?.imageUrl ? (
+                <Image
+                  src={user.imageUrl}
+                  alt={user.fullName || "User"}
+                  width={32}
+                  height={32}
+                  className="rounded-full"
+                />
+              ) : (
+                <FaUserCircle className="cursor-pointer text-xl md:text-2xl" />
+              )}
+            </Link>
+            <SignOutButton>
+              <button className="text-sm text-tertiary-light dark:text-tertiary-dark hover:underline">
+                Sign Out
+              </button>
+            </SignOutButton>
+          </div>
+        ) : (
+          <SignInButton mode="modal">
+            <FaUserCircle className="cursor-pointer text-xl md:text-2xl" />
+          </SignInButton>
+        )}
         {darkTheme ? (
           <MdOutlineLightMode
             className="cursor-pointer text-xl md:text-2xl"
@@ -78,7 +101,6 @@ const Header = () => {
         )}
       </div>
 
-      {/* Mobile Nav Menu */}
       {menuOpen && (
         <div className="absolute top-0 left-0 w-full h-screen bg-white dark:bg-black flex flex-col items-center justify-center space-y-8 text-xl z-40">
           <Link
@@ -102,6 +124,15 @@ const Header = () => {
           >
             Contacts
           </Link>
+          {isSignedIn && (
+            <Link
+              href="/dashboard"
+              onClick={() => setMenuOpen(false)}
+              className="hover:text-gray-500"
+            >
+              Dashboard
+            </Link>
+          )}
         </div>
       )}
     </header>
