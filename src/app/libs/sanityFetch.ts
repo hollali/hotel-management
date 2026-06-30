@@ -1,5 +1,5 @@
-import { groq, type QueryParams } from "next-sanity";
-import { createClient } from "next-sanity";
+import { createClient, type QueryParams } from "@sanity/client";
+import groq from "groq";
 
 function getClient() {
   const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
