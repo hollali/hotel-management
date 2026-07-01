@@ -7,8 +7,8 @@ export default defineConfig({
   name: "default",
   title: "Sky Inn Hotel CMS",
 
-  projectId: (process.env.SANITY_STUDIO_PROJECT_ID || process.env.NEXT_PUBLIC_SANITY_PROJECT_ID) as string,
-  dataset: (process.env.SANITY_STUDIO_DATASET || process.env.NEXT_PUBLIC_SANITY_DATASET) as string,
+  projectId: "w5cuzufz",
+  dataset: "production",
 
   basePath: "/studio",
 
