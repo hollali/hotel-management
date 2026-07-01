@@ -44,5 +44,13 @@ export async function getAllUsers() {
     throw new Error("Unauthorized");
   }
 
+  const metadata = (session.sessionClaims as Record<string, unknown>)?.metadata as
+    | Record<string, unknown>
+    | undefined;
+  const role = metadata?.role as string | undefined;
+  if (role !== "admin") {
+    throw new Error("Unauthorized: Admin access required");
+  }
+
   return db.select().from(users);
 }

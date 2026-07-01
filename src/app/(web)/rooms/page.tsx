@@ -74,16 +74,27 @@ const RoomsPage = async () => {
 
                 <div className="flex items-center justify-between">
                   <div>
-                    <span className="text-2xl font-bold text-primary">
-                      GHS {room.price}
-                    </span>
-                    <span className="text-sm text-gray-500 dark:text-gray-400 ml-1">
-                      /night
-                    </span>
-                    {room.discount > 0 && (
-                      <span className="block text-sm line-through text-gray-400">
-                        GHS {Math.round(room.price * (1 + room.discount / 100))}
-                      </span>
+                    {room.discount > 0 ? (
+                      <>
+                        <span className="text-2xl font-bold text-primary">
+                          GHS {Math.round(room.price * (1 - room.discount / 100))}
+                        </span>
+                        <span className="text-sm text-gray-500 dark:text-gray-400 ml-1">
+                          /night
+                        </span>
+                        <span className="block text-sm line-through text-gray-400">
+                          GHS {room.price}
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <span className="text-2xl font-bold text-primary">
+                          GHS {room.price}
+                        </span>
+                        <span className="text-sm text-gray-500 dark:text-gray-400 ml-1">
+                          /night
+                        </span>
+                      </>
                     )}
                   </div>
                   <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm capitalize">

@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, date, boolean, integer } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, date, boolean, integer, uniqueIndex } from "drizzle-orm/pg-core";
 
 export const roomAvailability = pgTable("room_availability", {
   id: text("id").primaryKey(),
@@ -10,7 +10,9 @@ export const roomAvailability = pgTable("room_availability", {
   blockedRooms: integer("blocked_rooms").notNull().default(0),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
-});
+}, (table) => ({
+  uniqueRoomDate: uniqueIndex("unique_room_date").on(table.roomId, table.date),
+}));
 
 export type RoomAvailability = typeof roomAvailability.$inferSelect;
 export type NewRoomAvailability = typeof roomAvailability.$inferInsert;

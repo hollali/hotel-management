@@ -62,71 +62,19 @@ const Footer = () => {
             </Link>
           </div>
 
-          {/* Links 1 */}
+          {/* Links */}
           <div className="flex-1 min-w-[180px] md:text-right">
             <Link
-              href="/our-story"
+              href="/rooms"
               className="block pb-2 hover:text-tertiary-light dark:hover:text-tertiary-dark"
             >
-              Our Story
+              Rooms
             </Link>
             <Link
               href="/contact"
-              className="block pb-2 hover:text-tertiary-light dark:hover:text-tertiary-dark"
-            >
-              Get in Touch
-            </Link>
-            <Link
-              href="/privacy"
-              className="block pb-2 hover:text-tertiary-light dark:hover:text-tertiary-dark"
-            >
-              Our Privacy
-            </Link>
-            <Link
-              href="/terms"
-              className="block pb-2 hover:text-tertiary-light dark:hover:text-tertiary-dark"
-            >
-              Terms of Service
-            </Link>
-            <Link
-              href="/support"
               className="block hover:text-tertiary-light dark:hover:text-tertiary-dark"
             >
-              Customer Support
-            </Link>
-          </div>
-
-          {/* Links 2 */}
-          <div className="flex-1 min-w-[180px] md:text-right">
-            <Link
-              href="/dining"
-              className="block pb-2 hover:text-tertiary-light dark:hover:text-tertiary-dark"
-            >
-              Dining Experience
-            </Link>
-            <Link
-              href="/wellness"
-              className="block pb-2 hover:text-tertiary-light dark:hover:text-tertiary-dark"
-            >
-              Wellness
-            </Link>
-            <Link
-              href="/fitness"
-              className="block pb-2 hover:text-tertiary-light dark:hover:text-tertiary-dark"
-            >
-              Fitness
-            </Link>
-            <Link
-              href="/sports"
-              className="block pb-2 hover:text-tertiary-light dark:hover:text-tertiary-dark"
-            >
-              Sports
-            </Link>
-            <Link
-              href="/events"
-              className="block hover:text-tertiary-light dark:hover:text-tertiary-dark"
-            >
-              Events
+              Contact Us
             </Link>
           </div>
         </div>

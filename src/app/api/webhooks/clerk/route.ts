@@ -11,7 +11,8 @@ export async function POST(req: Request) {
   const WEBHOOK_SECRET = process.env.CLERK_SIGNING_SECRET;
 
   if (!WEBHOOK_SECRET) {
-    throw new Error("Missing CLERK_SIGNING_SECRET environment variable");
+    console.warn("CLERK_SIGNING_SECRET not set — skipping webhook processing");
+    return new Response("Webhook secret not configured", { status: 200 });
   }
 
   const headerPayload = await headers();
@@ -43,7 +44,12 @@ export async function POST(req: Request) {
   const eventType = evt.type;
 
   if (eventType === "user.created" || eventType === "user.updated") {
-    const { id, email_addresses, first_name, last_name, image_url } = evt.data;
+    const data = evt.data as unknown as Record<string, unknown>;
+    const id = data.id as string;
+    const email_addresses = data.email_addresses as { email_address: string }[] | undefined;
+    const first_name = data.first_name as string | undefined;
+    const last_name = data.last_name as string | undefined;
+    const image_url = data.image_url as string | undefined;
 
     const email = email_addresses?.[0]?.email_address;
     if (!email) {
@@ -56,29 +62,36 @@ export async function POST(req: Request) {
       .where(eq(users.clerkId, id))
       .limit(1);
 
-    const userData = {
+    const userData: Partial<typeof users.$inferInsert> = {
       clerkId: id,
-      email,
-      firstName: first_name,
-      lastName: last_name,
-      imageUrl: image_url,
       updatedAt: new Date(),
     };
+
+    if (email !== undefined) userData.email = email;
+    if (first_name !== undefined) userData.firstName = first_name;
+    if (last_name !== undefined) userData.lastName = last_name;
+    if (image_url !== undefined) userData.imageUrl = image_url;
 
     if (existing.length > 0) {
       await db.update(users).set(userData).where(eq(users.clerkId, id));
     } else {
       await db.insert(users).values({
         id,
-        ...userData,
+        clerkId: id,
+        email,
+        firstName: first_name ?? null,
+        lastName: last_name ?? null,
+        imageUrl: image_url ?? null,
         role: "guest",
         createdAt: new Date(),
+        updatedAt: new Date(),
       });
     }
   }
 
   if (eventType === "user.deleted") {
-    const { id } = evt.data;
+    const data = evt.data as unknown as Record<string, unknown>;
+    const id = data.id as string;
     if (id) {
       await db.delete(users).where(eq(users.clerkId, id));
     }

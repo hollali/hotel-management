@@ -4,7 +4,8 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@clerk/nextjs/server";
 import { db } from "@/db";
 import { bookings, roomAvailability } from "@/db/schema";
-import { eq, and, gte, lte, sql } from "drizzle-orm";
+import { eq, and, gte, lte, desc } from "drizzle-orm";
+import { sanityFetch, groq } from "@/app/libs/sanityFetch";
 
 
 export type CreateBookingInput = {
@@ -25,12 +26,29 @@ export async function createBooking(input: CreateBookingInput) {
     throw new Error("Unauthorized");
   }
 
+  const room = await sanityFetch<{ price: number; discount: number }>(
+    groq`*[_type == "hotelRoom" && _id == $roomId][0] { price, discount }`,
+    { roomId: input.roomId }
+  );
+
+  if (!room) {
+    throw new Error("Room not found");
+  }
+
   const numberOfDays = Math.ceil(
     (input.checkOut.getTime() - input.checkIn.getTime()) / (1000 * 60 * 60 * 24)
   );
 
   if (numberOfDays < 1) {
     throw new Error("Check-out must be after check-in");
+  }
+
+  const calculatedDiscount = room.discount > 0 ? (room.price * room.discount) / 100 : 0;
+  const calculatedPricePerNight = room.price - calculatedDiscount;
+  const calculatedTotalPrice = calculatedPricePerNight * numberOfDays;
+
+  if (Math.round(calculatedTotalPrice) !== Math.round(input.totalPrice)) {
+    throw new Error("Price mismatch");
   }
 
   const existingBooking = await db
@@ -60,8 +78,8 @@ export async function createBooking(input: CreateBookingInput) {
     numberOfDays,
     adults: input.adults,
     children: input.children,
-    totalPrice: input.totalPrice.toString(),
-    discount: (input.discount ?? 0).toString(),
+    totalPrice: calculatedTotalPrice.toString(),
+    discount: (room.discount ?? 0).toString(),
     status: "confirmed",
     specialRequests: input.specialRequests,
   });
@@ -82,7 +100,7 @@ export async function getUserBookings() {
     .select()
     .from(bookings)
     .where(eq(bookings.userId, session.userId))
-    .orderBy(bookings.createdAt);
+    .orderBy(desc(bookings.createdAt));
 }
 
 export async function getAllBookings() {
@@ -91,7 +109,15 @@ export async function getAllBookings() {
     throw new Error("Unauthorized");
   }
 
-  return db.select().from(bookings).orderBy(bookings.createdAt);
+  const metadata = (session.sessionClaims as Record<string, unknown>)?.metadata as
+    | Record<string, unknown>
+    | undefined;
+  const role = metadata?.role as string | undefined;
+  if (role !== "admin") {
+    throw new Error("Unauthorized: Admin access required");
+  }
+
+  return db.select().from(bookings).orderBy(desc(bookings.createdAt));
 }
 
 export async function cancelBooking(bookingId: string) {

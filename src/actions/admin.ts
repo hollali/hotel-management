@@ -3,7 +3,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { db } from "@/db";
 import { bookings, users, payments, activityLogs } from "@/db/schema";
-import { sql, eq } from "drizzle-orm";
+import { sql, eq, desc } from "drizzle-orm";
 import { requireRole } from "@/app/libs/clerk";
 
 export async function getDashboardStats() {
@@ -20,13 +20,13 @@ export async function getDashboardStats() {
   const recentBookings = await db
     .select()
     .from(bookings)
-    .orderBy(bookings.createdAt)
+    .orderBy(desc(bookings.createdAt))
     .limit(10);
 
   const recentActivity = await db
     .select()
     .from(activityLogs)
-    .orderBy(activityLogs.createdAt)
+    .orderBy(desc(activityLogs.createdAt))
     .limit(20);
 
   return {
