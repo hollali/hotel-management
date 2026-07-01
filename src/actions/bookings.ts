@@ -4,9 +4,11 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@clerk/nextjs/server";
 import { randomUUID } from "crypto";
 import { db } from "@/db";
-import { bookings, payments, users } from "@/db/schema";
+import { bookings, payments } from "@/db/schema";
 import { eq, and, gte, lte, desc } from "drizzle-orm";
 import { sanityFetch, groq } from "@/app/libs/sanityFetch";
+import { ensureDbUser } from "@/app/libs/ensureUser";
+import * as Sentry from "@sentry/nextjs";
 
 type InitializePaymentInput = {
   roomId: string;
@@ -21,191 +23,194 @@ type InitializePaymentInput = {
 };
 
 export async function initializePayment(input: InitializePaymentInput) {
-  const session = await auth();
-  if (!session.userId) {
-    throw new Error("Unauthorized");
-  }
+  try {
+    const session = await auth();
+    if (!session.userId) {
+      throw new Error("Unauthorized");
+    }
 
-  const [dbUser] = await db
-    .select()
-    .from(users)
-    .where(eq(users.clerkId, session.userId))
-    .limit(1);
-  const email = dbUser?.email;
-  if (!email) {
-    throw new Error("No email found for your account. Please contact support.");
-  }
+    const dbUser = await ensureDbUser();
+    const email = dbUser.email;
 
-  const room = await sanityFetch<{ price: number; discount: number }>(
-    groq`*[_type == "hotelRoom" && _id == $roomId][0] { price, discount }`,
-    { roomId: input.roomId }
-  );
-
-  if (!room) {
-    throw new Error("Room not found");
-  }
-
-  const numberOfDays = Math.ceil(
-    (input.checkOut.getTime() - input.checkIn.getTime()) / (1000 * 60 * 60 * 24)
-  );
-
-  if (numberOfDays < 1) {
-    throw new Error("Check-out must be after check-in");
-  }
-
-  const calculatedDiscount = room.discount > 0 ? (room.price * room.discount) / 100 : 0;
-  const calculatedPricePerNight = room.price - calculatedDiscount;
-  const calculatedTotalPrice = calculatedPricePerNight * numberOfDays;
-
-  if (Math.round(calculatedTotalPrice) !== Math.round(input.totalPrice)) {
-    throw new Error("Price mismatch");
-  }
-
-  const existingBooking = await db
-    .select()
-    .from(bookings)
-    .where(
-      and(
-        eq(bookings.roomId, input.roomId),
-        eq(bookings.status, "confirmed"),
-        lte(bookings.checkIn, input.checkOut),
-        gte(bookings.checkOut, input.checkIn)
-      )
+    const room = await sanityFetch<{ price: number; discount: number }>(
+      groq`*[_type == "hotelRoom" && _id == $roomId][0] { price, discount }`,
+      { roomId: input.roomId }
     );
 
-  if (existingBooking.length > 0) {
-    throw new Error("Room is not available for the selected dates");
-  }
+    if (!room) {
+      throw new Error("Room not found");
+    }
 
-  const bookingId = randomUUID();
-  const paystackSecretKey = process.env.PAYSTACK_SECRET_KEY;
-  if (!paystackSecretKey) {
-    throw new Error("Online payments are not available at the moment. Please try again later.");
-  }
+    const numberOfDays = Math.ceil(
+      (input.checkOut.getTime() - input.checkIn.getTime()) / (1000 * 60 * 60 * 24)
+    );
 
-  const amountInPesewas = Math.round(calculatedTotalPrice * 100);
-  const baseUrl = process.env.NEXT_PUBLIC_URL || "http://localhost:3000";
+    if (numberOfDays < 1) {
+      throw new Error("Check-out must be after check-in");
+    }
 
-  const paystackRes = await fetch("https://api.paystack.co/transaction/initialize", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${paystackSecretKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      email,
-      amount: amountInPesewas,
+    const calculatedDiscount = room.discount > 0 ? (room.price * room.discount) / 100 : 0;
+    const calculatedPricePerNight = room.price - calculatedDiscount;
+    const calculatedTotalPrice = calculatedPricePerNight * numberOfDays;
+
+    if (Math.round(calculatedTotalPrice) !== Math.round(input.totalPrice)) {
+      throw new Error("Price mismatch");
+    }
+
+    const existingBooking = await db
+      .select()
+      .from(bookings)
+      .where(
+        and(
+          eq(bookings.roomId, input.roomId),
+          eq(bookings.status, "confirmed"),
+          lte(bookings.checkIn, input.checkOut),
+          gte(bookings.checkOut, input.checkIn)
+        )
+      );
+
+    if (existingBooking.length > 0) {
+      throw new Error("Room is not available for the selected dates");
+    }
+
+    const bookingId = randomUUID();
+    const paystackSecretKey = process.env.PAYSTACK_SECRET_KEY;
+    if (!paystackSecretKey) {
+      throw new Error("Online payments are not available at the moment. Please try again later.");
+    }
+
+    const amountInPesewas = Math.round(calculatedTotalPrice * 100);
+    const baseUrl = process.env.NEXT_PUBLIC_URL || "http://localhost:3000";
+
+    const paystackRes = await fetch("https://api.paystack.co/transaction/initialize", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${paystackSecretKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        amount: amountInPesewas,
+        currency: "GHS",
+        callback_url: `${baseUrl}/payment/callback`,
+        metadata: { bookingId },
+      }),
+    });
+
+    const paystackData = await paystackRes.json();
+
+    if (!paystackRes.ok || !paystackData.status) {
+      throw new Error(paystackData.message || "Failed to initialize payment");
+    }
+
+    const reference = paystackData.data.reference;
+
+    await db.insert(bookings).values({
+      id: bookingId,
+      userId: session.userId,
+      roomId: input.roomId,
+      roomName: input.roomName,
+      checkIn: input.checkIn,
+      checkOut: input.checkOut,
+      numberOfDays,
+      adults: input.adults,
+      children: input.children,
+      totalPrice: calculatedTotalPrice.toString(),
+      discount: (room.discount ?? 0).toString(),
+      status: "pending_payment",
+      specialRequests: input.specialRequests,
+    });
+
+    await db.insert(payments).values({
+      id: randomUUID(),
+      bookingId,
+      amount: calculatedTotalPrice.toString(),
       currency: "GHS",
-      callback_url: `${baseUrl}/payment/callback`,
-      metadata: { bookingId },
-    }),
-  });
+      method: "paystack",
+      status: "pending",
+      transactionId: reference,
+    });
 
-  const paystackData = await paystackRes.json();
+    revalidatePath("/dashboard/bookings");
 
-  if (!paystackRes.ok || !paystackData.status) {
-    throw new Error(paystackData.message || "Failed to initialize payment");
+    return { authorizationUrl: paystackData.data.authorization_url, bookingId };
+  } catch (error) {
+    Sentry.captureException(error);
+    throw error;
   }
-
-  const reference = paystackData.data.reference;
-
-  await db.insert(bookings).values({
-    id: bookingId,
-    userId: session.userId,
-    roomId: input.roomId,
-    roomName: input.roomName,
-    checkIn: input.checkIn,
-    checkOut: input.checkOut,
-    numberOfDays,
-    adults: input.adults,
-    children: input.children,
-    totalPrice: calculatedTotalPrice.toString(),
-    discount: (room.discount ?? 0).toString(),
-    status: "pending_payment",
-    specialRequests: input.specialRequests,
-  });
-
-  await db.insert(payments).values({
-    id: randomUUID(),
-    bookingId,
-    amount: calculatedTotalPrice.toString(),
-    currency: "GHS",
-    method: "paystack",
-    status: "pending",
-    transactionId: reference,
-  });
-
-  revalidatePath("/dashboard/bookings");
-
-  return { authorizationUrl: paystackData.data.authorization_url, bookingId };
 }
 
 export async function verifyPayment(reference: string) {
-  const paystackSecretKey = process.env.PAYSTACK_SECRET_KEY;
-  if (!paystackSecretKey) {
-    throw new Error("Payment not configured");
-  }
-
-  const paystackRes = await fetch(
-    `https://api.paystack.co/transaction/verify/${encodeURIComponent(reference)}`,
-    {
-      headers: { Authorization: `Bearer ${paystackSecretKey}` },
+  try {
+    const paystackSecretKey = process.env.PAYSTACK_SECRET_KEY;
+    if (!paystackSecretKey) {
+      throw new Error("Payment not configured");
     }
-  );
 
-  const paystackData = await paystackRes.json();
+    const paystackRes = await fetch(
+      `https://api.paystack.co/transaction/verify/${encodeURIComponent(reference)}`,
+      {
+        headers: { Authorization: `Bearer ${paystackSecretKey}` },
+      }
+    );
 
-  if (!paystackRes.ok || !paystackData.status) {
-    throw new Error(paystackData.message || "Verification failed");
-  }
+    const paystackData = await paystackRes.json();
 
-  const transactionStatus = paystackData.data.status;
-  const bookingId = paystackData.data.metadata?.bookingId as string | undefined;
+    if (!paystackRes.ok || !paystackData.status) {
+      throw new Error(paystackData.message || "Verification failed");
+    }
 
-  if (!bookingId) {
-    throw new Error("Booking ID not found in transaction metadata");
-  }
+    const transactionStatus = paystackData.data.status;
+    const bookingId = paystackData.data.metadata?.bookingId as string | undefined;
 
-  const [payment] = await db
-    .select()
-    .from(payments)
-    .where(eq(payments.transactionId, reference))
-    .limit(1);
+    if (!bookingId) {
+      throw new Error("Booking ID not found in transaction metadata");
+    }
 
-  if (!payment) {
-    throw new Error("Payment record not found");
-  }
+    const [payment] = await db
+      .select()
+      .from(payments)
+      .where(eq(payments.transactionId, reference))
+      .limit(1);
 
-  if (transactionStatus === "success") {
+    if (!payment) {
+      throw new Error("Payment record not found");
+    }
+
+    if (transactionStatus === "success") {
+      await db
+        .update(bookings)
+        .set({ status: "confirmed", updatedAt: new Date() })
+        .where(eq(bookings.id, bookingId));
+
+      await db
+        .update(payments)
+        .set({ status: "completed", paidAt: new Date(), updatedAt: new Date() })
+        .where(eq(payments.id, payment.id));
+
+      revalidatePath("/dashboard/bookings");
+      revalidatePath("/rooms");
+
+      return { success: true, status: "confirmed" as const };
+    }
+
     await db
       .update(bookings)
-      .set({ status: "confirmed", updatedAt: new Date() })
+      .set({ status: "cancelled", updatedAt: new Date() })
       .where(eq(bookings.id, bookingId));
 
     await db
       .update(payments)
-      .set({ status: "completed", paidAt: new Date(), updatedAt: new Date() })
+      .set({ status: "failed", updatedAt: new Date() })
       .where(eq(payments.id, payment.id));
 
     revalidatePath("/dashboard/bookings");
-    revalidatePath("/rooms");
 
-    return { success: true, status: "confirmed" as const };
+    return { success: false, status: transactionStatus };
+  } catch (error) {
+    Sentry.captureException(error);
+    throw error;
   }
-
-  await db
-    .update(bookings)
-    .set({ status: "cancelled", updatedAt: new Date() })
-    .where(eq(bookings.id, bookingId));
-
-  await db
-    .update(payments)
-    .set({ status: "failed", updatedAt: new Date() })
-    .where(eq(payments.id, payment.id));
-
-  revalidatePath("/dashboard/bookings");
-
-  return { success: false, status: transactionStatus };
 }
 
 export async function getUserBookings() {

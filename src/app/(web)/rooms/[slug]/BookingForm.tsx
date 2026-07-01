@@ -5,6 +5,7 @@ import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { initializePayment } from "@/actions/bookings";
 import toast from "react-hot-toast";
+import * as Sentry from "@sentry/nextjs";
 import type { SanityRoom } from "@/app/libs/sanityFetch";
 
 type Props = {
@@ -58,6 +59,7 @@ const BookingForm = ({ room }: Props) => {
 
       window.location.href = result.authorizationUrl;
     } catch (error) {
+      Sentry.captureException(error);
       toast.error(error instanceof Error ? error.message : "Failed to initialize payment");
     } finally {
       setLoading(false);

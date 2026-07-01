@@ -5,6 +5,7 @@ import { db } from "@/db";
 import { bookings, users, payments, activityLogs } from "@/db/schema";
 import { sql, eq, desc } from "drizzle-orm";
 import { requireRole } from "@/app/libs/clerk";
+import * as Sentry from "@sentry/nextjs";
 
 export async function getDashboardStats() {
   await requireRole("admin");

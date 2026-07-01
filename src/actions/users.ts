@@ -4,6 +4,7 @@ import { auth } from "@clerk/nextjs/server";
 import { db } from "@/db";
 import { users } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import * as Sentry from "@sentry/nextjs";
 
 export async function getCurrentUserProfile() {
   const session = await auth();

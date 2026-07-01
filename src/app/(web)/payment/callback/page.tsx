@@ -3,6 +3,7 @@
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { verifyPayment } from "@/actions/bookings";
+import * as Sentry from "@sentry/nextjs";
 import Link from "next/link";
 
 function PaymentCallbackInner() {
@@ -29,7 +30,8 @@ function PaymentCallbackInner() {
           setStatus("failed");
           setMessage("Payment was not completed. Please try again.");
         }
-      } catch {
+      } catch (error) {
+        Sentry.captureException(error);
         setStatus("failed");
         setMessage("Could not verify payment. Please contact support.");
       }

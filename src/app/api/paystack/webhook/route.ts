@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { verifyPayment } from "@/actions/bookings";
+import * as Sentry from "@sentry/nextjs";
 
 export async function POST(req: Request) {
   const secret = process.env.PAYSTACK_SECRET_KEY;
@@ -24,6 +25,7 @@ export async function POST(req: Request) {
     try {
       await verifyPayment(reference);
     } catch (err) {
+      Sentry.captureException(err);
       console.error("Paystack webhook verification failed:", err);
       return NextResponse.json({ error: "Verification failed" }, { status: 500 });
     }

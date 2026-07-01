@@ -6,6 +6,7 @@ import { WebhookEvent } from "@clerk/nextjs/server";
 import { db } from "@/db";
 import { users } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import * as Sentry from "@sentry/nextjs";
 
 export async function POST(req: Request) {
   const WEBHOOK_SECRET = process.env.CLERK_SIGNING_SECRET;
@@ -37,6 +38,7 @@ export async function POST(req: Request) {
       "svix-signature": svixSignature,
     }) as WebhookEvent;
   } catch (err) {
+    Sentry.captureException(err);
     console.error("Webhook verification failed:", err);
     return new Response("Invalid signature", { status: 400 });
   }
