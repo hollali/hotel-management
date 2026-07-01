@@ -11,8 +11,8 @@
     "db:push": "drizzle-kit push",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
-    "sanity:dev": "sanity dev -p 3333",
-    "sanity:build": "sanity build"
+    "sanity:dev": "dotenv -- sanity dev -p 3333",
+    "sanity:build": "dotenv -- sanity build"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.5.10",
