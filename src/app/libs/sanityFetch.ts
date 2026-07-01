@@ -65,6 +65,57 @@ export async function getRoomBySlug(slug: string) {
   );
 }
 
+export type SanityHotelInfo = {
+  name: string;
+  description: string;
+  logo?: { asset?: SanityAsset };
+  address: string;
+  city: string;
+  country: string;
+  phone: string;
+  email: string;
+  website: string;
+  checkInTime: string;
+  checkOutTime: string;
+};
+
+export async function getHotelInfo() {
+  return sanityFetch<SanityHotelInfo | null>(
+    groq`*[_type == "hotelInfo"][0] {
+      name,
+      description,
+      logo { asset->{ url } },
+      address,
+      city,
+      country,
+      phone,
+      email,
+      website,
+      checkInTime,
+      checkOutTime
+    }`
+  );
+}
+
+export async function getFeaturedRooms() {
+  return sanityFetch<SanityRoom[]>(
+    groq`*[_type == "hotelRoom" && isFeatured == true] | order(name asc) {
+      _id,
+      name,
+      slug,
+      description,
+      price,
+      discount,
+      coverImage { url, file { asset->{ url } } },
+      type,
+      NumberOfBed,
+      maxGuests,
+      offeredAmenities,
+      isFeatured
+    }`
+  );
+}
+
 export type SanityAsset = {
   url: string;
 };
