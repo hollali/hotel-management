@@ -1,6 +1,6 @@
 # Hotel Management System
 
-A full-stack hotel management application built with Next.js 15, Clerk authentication, NeonDB (PostgreSQL) with Drizzle ORM, and Sanity CMS for content management.
+A full-stack hotel management application built with Next.js 15, Clerk authentication, NeonDB (PostgreSQL) with Drizzle ORM, Sanity CMS for content management, and Paystack for payment processing.
 
 [![Next.js](https://img.shields.io/badge/Next.js-15-black?style=flat-square&logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
@@ -9,12 +9,16 @@ A full-stack hotel management application built with Next.js 15, Clerk authentic
 [![NeonDB](https://img.shields.io/badge/NeonDB-PostgreSQL-00E599?style=flat-square&logo=postgresql)](https://neon.tech/)
 [![Drizzle](https://img.shields.io/badge/Drizzle-ORM-C5F74F?style=flat-square&logo=drizzle)](https://orm.drizzle.team/)
 [![Sanity](https://img.shields.io/badge/Sanity.io-CMS-red?style=flat-square&logo=sanity)](https://www.sanity.io/)
+[![Paystack](https://img.shields.io/badge/Paystack-Payments-00C3E3?style=flat-square&logo=paystack)](https://paystack.com/)
+
+Date: 2026-07-01
 
 ## Features
 
 - **Authentication & Authorization** — Clerk-powered auth with role-based access (admin, receptionist, manager, guest)
 - **Hotel Room Listings** — Browse rooms with CMS-managed content (amenities, pricing, images)
 - **Booking System** — Server actions for creating/managing bookings with room availability checks
+- **Payment Processing** — Paystack integration with GHS support for secure online payments
 - **Admin Dashboard** — Role-gated admin panel with full CRUD operations
 - **Content Management** — Sanity Studio as a standalone CMS for hotel content (rooms, amenities, promotions, FAQs, policies, gallery)
 - **Transactional Database** — PostgreSQL via NeonDB with Drizzle ORM schema (users, bookings, guests, payments, invoices, check-in/check-out, activity logs)
@@ -31,6 +35,7 @@ A full-stack hotel management application built with Next.js 15, Clerk authentic
 | Database        | NeonDB (PostgreSQL)                |
 | ORM             | Drizzle ORM + drizzle-kit          |
 | CMS             | Sanity.io (standalone Studio)      |
+| Payments        | Paystack (GHS)                     |
 | Form Handling   | React Hook Form                    |
 | State           | Zustand                            |
 
@@ -43,6 +48,7 @@ A full-stack hotel management application built with Next.js 15, Clerk authentic
 - A NeonDB (PostgreSQL) database
 - A Clerk application
 - A Sanity.io project
+- A Paystack account (for payment processing)
 
 ### 1. Clone & Install
 
@@ -76,8 +82,12 @@ SANITY_STUDIO_PROJECT_ID=your_project_id
 SANITY_STUDIO_DATASET=production
 SANITY_STUDIO_TOKEN=your_token
 
+# Paystack
+PAYSTACK_SECRET_KEY=sk_live_...        # Secret key from Paystack dashboard
+NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY=pk_live_...  # Public key from Paystack dashboard
+
 # Next.js
-NEXT_PUBLIC_URL=http://localhost:3000
+NEXT_PUBLIC_URL=http://localhost:3000   # Used for Paystack callback URL
 ```
 
 ### 3. Database Migrations
@@ -104,6 +114,20 @@ npm run sanity:dev
 
 Configure a webhook in the Clerk Dashboard pointing to `http://localhost:3000/api/webhooks/clerk` for the `user.created`, `user.updated`, and `user.deleted` events.
 
+### 6. Set Up Paystack Webhook (Production)
+
+In your Paystack dashboard, add a webhook pointing to `https://yourdomain.com/api/paystack/webhook` for the `charge.success` event.
+
+## Payment Flow
+
+1. User selects dates and guests on a room detail page
+2. Clicks **Book Now & Pay** to initiate a Paystack transaction
+3. Booking is created with `pending_payment` status
+4. User is redirected to Paystack's secure checkout page
+5. After successful payment, user is redirected back to `/payment/callback`
+6. Booking status is updated to `confirmed` and payment record is created
+7. Paystack also sends a `charge.success` webhook as a backup verification
+
 ## Project Structure
 
 ```
@@ -115,11 +139,14 @@ hotel-management/
 │   │   │   ├── auth/            # Sign-in/Sign-up
 │   │   │   ├── contacts/        # Contact page
 │   │   │   ├── dashboard/       # User/admin dashboard
-│   │   │   ├── reservations/    # Booking management
+│   │   │   ├── payment/         # Paystack callback handler
 │   │   │   └── rooms/           # Room listings & details
-│   │   └── api/webhooks/clerk/  # Clerk user sync webhook
+│   │   └── api/
+│   │       ├── contact/         # Contact form submission
+│   │       ├── paystack/        # Paystack webhook
+│   │       └── webhooks/clerk/  # Clerk user sync webhook
 │   ├── actions/                 # Server actions
-│   │   ├── bookings.ts
+│   │   ├── bookings.ts          # Payment & booking actions
 │   │   ├── users.ts
 │   │   └── admin.ts
 │   ├── components/              # React components
@@ -165,6 +192,7 @@ hotel-management/
 - Sanity Studio runs as a **standalone application** on port 3333 (not embedded in Next.js) to avoid bundling issues with the `motion` animation library.
 - The database connection uses a lazy `Proxy` pattern to avoid build-time failures when `DATABASE_URL` is unset.
 - Clerk webhooks sync user data to the local PostgreSQL database for transactional queries.
+- Payments are processed in **GHS (Ghanaian Cedi)** via Paystack. Transactions are denominated in pesewas (amount × 100).
 
 ## License
 

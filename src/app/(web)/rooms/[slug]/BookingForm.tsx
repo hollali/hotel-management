@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
-import { createBooking } from "@/actions/bookings";
+import { initializePayment } from "@/actions/bookings";
 import toast from "react-hot-toast";
 import type { SanityRoom } from "@/app/libs/sanityFetch";
 
@@ -45,7 +45,7 @@ const BookingForm = ({ room }: Props) => {
 
     setLoading(true);
     try {
-      const result = await createBooking({
+      const result = await initializePayment({
         roomId: room._id,
         roomName: room.name,
         checkIn: new Date(checkIn),
@@ -56,12 +56,9 @@ const BookingForm = ({ room }: Props) => {
         discount: room.discount,
       });
 
-      if (result.success) {
-        toast.success("Room booked successfully!");
-        router.push("/dashboard/bookings");
-      }
+      window.location.href = result.authorizationUrl;
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Failed to book room");
+      toast.error(error instanceof Error ? error.message : "Failed to initialize payment");
     } finally {
       setLoading(false);
     }
@@ -142,7 +139,7 @@ const BookingForm = ({ room }: Props) => {
         disabled={loading}
         className="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50"
       >
-        {loading ? "Booking..." : isSignedIn ? "Book Now" : "Sign In to Book"}
+        {loading ? "Redirecting to Paystack..." : isSignedIn ? "Book Now & Pay" : "Sign In to Book"}
       </button>
     </form>
   );

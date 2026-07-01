@@ -9,6 +9,7 @@ const MyBookingsPage = async () => {
 
   const statusColors: Record<string, string> = {
     pending: "bg-yellow-100 text-yellow-800",
+    pending_payment: "bg-purple-100 text-purple-800",
     confirmed: "bg-green-100 text-green-800",
     checked_in: "bg-blue-100 text-blue-800",
     checked_out: "bg-gray-100 text-gray-800",
@@ -80,8 +81,13 @@ const MyBookingsPage = async () => {
                 </div>
               </div>
 
-              {booking.status === "confirmed" && (
+              {(booking.status === "confirmed" || booking.status === "pending_payment") && (
                 <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                  {booking.status === "pending_payment" && (
+                    <p className="text-sm text-purple-600 dark:text-purple-400 mb-2">
+                      Awaiting payment — you can cancel if you changed your mind.
+                    </p>
+                  )}
                   <CancelBookingButton bookingId={booking.id} />
                 </div>
               )}

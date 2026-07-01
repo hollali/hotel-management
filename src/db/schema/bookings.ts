@@ -3,6 +3,7 @@ import { users } from "./users";
 
 export const bookingStatusEnum = pgEnum("booking_status", [
   "pending",
+  "pending_payment",
   "confirmed",
   "checked_in",
   "checked_out",

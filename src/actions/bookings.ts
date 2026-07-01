@@ -1,14 +1,13 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { db } from "@/db";
-import { bookings, roomAvailability } from "@/db/schema";
+import { bookings, payments } from "@/db/schema";
 import { eq, and, gte, lte, desc } from "drizzle-orm";
 import { sanityFetch, groq } from "@/app/libs/sanityFetch";
 
-
-export type CreateBookingInput = {
+type InitializePaymentInput = {
   roomId: string;
   roomName: string;
   checkIn: Date;
@@ -20,10 +19,16 @@ export type CreateBookingInput = {
   specialRequests?: string;
 };
 
-export async function createBooking(input: CreateBookingInput) {
+export async function initializePayment(input: InitializePaymentInput) {
   const session = await auth();
   if (!session.userId) {
     throw new Error("Unauthorized");
+  }
+
+  const user = await currentUser();
+  const email = user?.emailAddresses?.[0]?.emailAddress;
+  if (!email) {
+    throw new Error("No email address found");
   }
 
   const room = await sanityFetch<{ price: number; discount: number }>(
@@ -68,6 +73,37 @@ export async function createBooking(input: CreateBookingInput) {
   }
 
   const bookingId = crypto.randomUUID();
+  const paystackSecretKey = process.env.PAYSTACK_SECRET_KEY;
+  if (!paystackSecretKey) {
+    throw new Error("Payment not configured");
+  }
+
+  const amountInPesewas = Math.round(calculatedTotalPrice * 100);
+  const baseUrl = process.env.NEXT_PUBLIC_URL || "http://localhost:3000";
+
+  const paystackRes = await fetch("https://api.paystack.co/transaction/initialize", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${paystackSecretKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      email,
+      amount: amountInPesewas,
+      currency: "GHS",
+      callback_url: `${baseUrl}/payment/callback`,
+      metadata: { bookingId },
+    }),
+  });
+
+  const paystackData = await paystackRes.json();
+
+  if (!paystackRes.ok || !paystackData.status) {
+    throw new Error(paystackData.message || "Failed to initialize payment");
+  }
+
+  const reference = paystackData.data.reference;
+
   await db.insert(bookings).values({
     id: bookingId,
     userId: session.userId,
@@ -80,14 +116,91 @@ export async function createBooking(input: CreateBookingInput) {
     children: input.children,
     totalPrice: calculatedTotalPrice.toString(),
     discount: (room.discount ?? 0).toString(),
-    status: "confirmed",
+    status: "pending_payment",
     specialRequests: input.specialRequests,
   });
 
-  revalidatePath("/dashboard/bookings");
-  revalidatePath("/rooms");
+  await db.insert(payments).values({
+    id: crypto.randomUUID(),
+    bookingId,
+    amount: calculatedTotalPrice.toString(),
+    currency: "GHS",
+    method: "paystack",
+    status: "pending",
+    transactionId: reference,
+  });
 
-  return { success: true, bookingId };
+  revalidatePath("/dashboard/bookings");
+
+  return { authorizationUrl: paystackData.data.authorization_url, bookingId };
+}
+
+export async function verifyPayment(reference: string) {
+  const paystackSecretKey = process.env.PAYSTACK_SECRET_KEY;
+  if (!paystackSecretKey) {
+    throw new Error("Payment not configured");
+  }
+
+  const paystackRes = await fetch(
+    `https://api.paystack.co/transaction/verify/${encodeURIComponent(reference)}`,
+    {
+      headers: { Authorization: `Bearer ${paystackSecretKey}` },
+    }
+  );
+
+  const paystackData = await paystackRes.json();
+
+  if (!paystackRes.ok || !paystackData.status) {
+    throw new Error(paystackData.message || "Verification failed");
+  }
+
+  const transactionStatus = paystackData.data.status;
+  const bookingId = paystackData.data.metadata?.bookingId as string | undefined;
+
+  if (!bookingId) {
+    throw new Error("Booking ID not found in transaction metadata");
+  }
+
+  const [payment] = await db
+    .select()
+    .from(payments)
+    .where(eq(payments.transactionId, reference))
+    .limit(1);
+
+  if (!payment) {
+    throw new Error("Payment record not found");
+  }
+
+  if (transactionStatus === "success") {
+    await db
+      .update(bookings)
+      .set({ status: "confirmed", updatedAt: new Date() })
+      .where(eq(bookings.id, bookingId));
+
+    await db
+      .update(payments)
+      .set({ status: "completed", paidAt: new Date(), updatedAt: new Date() })
+      .where(eq(payments.id, payment.id));
+
+    revalidatePath("/dashboard/bookings");
+    revalidatePath("/rooms");
+
+    return { success: true, status: "confirmed" as const };
+  }
+
+  await db
+    .update(bookings)
+    .set({ status: "cancelled", updatedAt: new Date() })
+    .where(eq(bookings.id, bookingId));
+
+  await db
+    .update(payments)
+    .set({ status: "failed", updatedAt: new Date() })
+    .where(eq(payments.id, payment.id));
+
+  revalidatePath("/dashboard/bookings");
+
+  return { success: false, status: transactionStatus };
 }
 
 export async function getUserBookings() {
