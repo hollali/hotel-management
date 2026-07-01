@@ -29,7 +29,7 @@ export async function getRooms() {
       description,
       price,
       discount,
-      coverImage,
+      coverImage { ..., asset-> },
       type,
       dimension,
       NumberOfBed,
@@ -50,8 +50,8 @@ export async function getRoomBySlug(slug: string) {
       description,
       price,
       discount,
-      images,
-      coverImage,
+      images[] { ..., asset-> },
+      coverImage { ..., asset-> },
       type,
       SpecialNote,
       dimension,
@@ -65,6 +65,14 @@ export async function getRoomBySlug(slug: string) {
   );
 }
 
+export type SanityImage = {
+  _type: string;
+  asset: {
+    _id: string;
+    url: string;
+  };
+};
+
 export type SanityRoom = {
   _id: string;
   name: string;
@@ -72,8 +80,8 @@ export type SanityRoom = {
   description: string;
   price: number;
   discount: number;
-  images?: { url?: string; file?: { asset?: { url?: string } } }[];
-  coverImage: { url?: string; file?: { asset?: { url?: string } } };
+  images?: SanityImage[];
+  coverImage: SanityImage;
   type: "basic" | "luxury" | "suite";
   SpecialNote?: string;
   dimension?: string;

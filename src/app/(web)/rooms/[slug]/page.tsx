@@ -19,7 +19,7 @@ const RoomDetailPage = async ({
     notFound();
   }
 
-  const coverUrl = room.coverImage?.url || room.coverImage?.file?.asset?.url;
+  const coverUrl = room.coverImage?.asset?.url;
 
   return (
     <section className="container mx-auto px-4 py-8">
@@ -45,7 +45,7 @@ const RoomDetailPage = async ({
             {room.images?.slice(0, 4).map((img, i) => (
               <div key={i} className="relative h-24 w-24 md:h-32 md:w-32 rounded-lg overflow-hidden">
                 <Image
-                  src={img.url || img.file?.asset?.url || ""}
+                  src={img.asset?.url || ""}
                   alt={`${room.name} ${i + 1}`}
                   fill
                   className="object-cover"
