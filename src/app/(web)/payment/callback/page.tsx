@@ -8,7 +8,7 @@ import Link from "next/link";
 function PaymentCallbackInner() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const reference = searchParams.get("reference");
+  const reference = searchParams.get("reference") || searchParams.get("trxref");
   const [status, setStatus] = useState<"loading" | "success" | "failed">("loading");
   const [message, setMessage] = useState("Verifying your payment...");
 

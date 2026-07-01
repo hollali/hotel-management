@@ -1,9 +1,10 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { auth, currentUser } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
+import { randomUUID } from "crypto";
 import { db } from "@/db";
-import { bookings, payments } from "@/db/schema";
+import { bookings, payments, users } from "@/db/schema";
 import { eq, and, gte, lte, desc } from "drizzle-orm";
 import { sanityFetch, groq } from "@/app/libs/sanityFetch";
 
@@ -25,10 +26,14 @@ export async function initializePayment(input: InitializePaymentInput) {
     throw new Error("Unauthorized");
   }
 
-  const user = await currentUser();
-  const email = user?.emailAddresses?.[0]?.emailAddress;
+  const [dbUser] = await db
+    .select()
+    .from(users)
+    .where(eq(users.clerkId, session.userId))
+    .limit(1);
+  const email = dbUser?.email;
   if (!email) {
-    throw new Error("No email address found");
+    throw new Error("No email found for your account. Please contact support.");
   }
 
   const room = await sanityFetch<{ price: number; discount: number }>(
@@ -72,10 +77,10 @@ export async function initializePayment(input: InitializePaymentInput) {
     throw new Error("Room is not available for the selected dates");
   }
 
-  const bookingId = crypto.randomUUID();
+  const bookingId = randomUUID();
   const paystackSecretKey = process.env.PAYSTACK_SECRET_KEY;
   if (!paystackSecretKey) {
-    throw new Error("Payment not configured");
+    throw new Error("Online payments are not available at the moment. Please try again later.");
   }
 
   const amountInPesewas = Math.round(calculatedTotalPrice * 100);
@@ -121,7 +126,7 @@ export async function initializePayment(input: InitializePaymentInput) {
   });
 
   await db.insert(payments).values({
-    id: crypto.randomUUID(),
+    id: randomUUID(),
     bookingId,
     amount: calculatedTotalPrice.toString(),
     currency: "GHS",
