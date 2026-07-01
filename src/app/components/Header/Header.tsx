@@ -34,11 +34,6 @@ const Header = () => {
     setMenuOpen(false);
   }, [pathname]);
 
-  useEffect(() => {
-    document.body.style.overflow = menuOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
-  }, [menuOpen]);
-
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";
     return pathname.startsWith(href);
@@ -58,15 +53,11 @@ const Header = () => {
       <div className="container mx-auto px-4 h-16 md:h-20 flex items-center justify-between">
         {/* Mobile menu button */}
         <button
-          className="md:hidden text-2xl relative z-50 p-2 -ml-2"
+          className="md:hidden text-2xl p-2 -ml-2"
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label="Toggle menu"
         >
-          {menuOpen ? (
-            <FaTimes />
-          ) : (
-            <HiOutlineMenuAlt3 />
-          )}
+          {menuOpen ? <FaTimes /> : <HiOutlineMenuAlt3 />}
         </button>
 
         {/* Logo */}
@@ -113,10 +104,7 @@ const Header = () => {
         {/* Actions */}
         <div className="flex items-center gap-2 md:gap-3">
           {isSignedIn ? (
-            <Link
-              href="/dashboard"
-              className="flex items-center gap-2"
-            >
+            <Link href="/dashboard" className="flex items-center gap-2">
               {user?.imageUrl ? (
                 <Image
                   src={user.imageUrl}
@@ -158,27 +146,17 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Mobile drawer overlay */}
+      {/* Mobile dropdown */}
       {menuOpen && (
         <div
-          className="fixed inset-0 bg-black/40 z-40 md:hidden"
-          onClick={() => setMenuOpen(false)}
-        />
-      )}
-
-      {/* Mobile drawer */}
-      <div
-        className={`fixed top-0 left-0 h-full w-72 bg-white dark:bg-gray-950 z-40 transform transition-transform duration-300 ease-in-out md:hidden ${
-          menuOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
-      >
-        <div className="flex flex-col h-full pt-20 pb-6 px-6">
-          <nav className="flex-1 space-y-1">
+          className="md:hidden border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-black shadow-lg animate-fade-down"
+        >
+          <div className="container mx-auto px-4 py-3 space-y-1">
             {allLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`flex items-center px-4 py-3 rounded-lg text-base font-medium transition-colors ${
+                className={`block px-4 py-3 rounded-lg text-base font-medium transition-colors ${
                   isActive(link.href)
                     ? "bg-primary/10 text-primary"
                     : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
@@ -187,11 +165,11 @@ const Header = () => {
                 {link.label}
               </Link>
             ))}
-          </nav>
+          </div>
 
-          <div className="border-t border-gray-200 dark:border-gray-800 pt-4 space-y-3">
+          <div className="container mx-auto px-4 pb-4 pt-2 border-t border-gray-200 dark:border-gray-800">
             {isSignedIn ? (
-              <div className="flex items-center gap-3 px-4">
+              <div className="flex items-center gap-3 px-4 py-2">
                 {user?.imageUrl ? (
                   <Image
                     src={user.imageUrl}
@@ -222,14 +200,14 @@ const Header = () => {
 
             {isSignedIn && (
               <SignOutButton>
-                <button className="w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors">
+                <button className="w-full text-left px-4 py-3 mt-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors">
                   Sign Out
                 </button>
               </SignOutButton>
             )}
           </div>
         </div>
-      </div>
+      )}
     </header>
   );
 };

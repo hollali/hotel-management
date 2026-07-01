@@ -21,6 +21,15 @@ const config: Config = {
     fontFamily: {
       poppins:['var(--font-poppins)',...fontFamily.sans],
     },
+    keyframes: {
+      'fade-down': {
+        '0%': { opacity: '0', transform: 'translateY(-8px)' },
+        '100%': { opacity: '1', transform: 'translateY(0)' },
+      },
+    },
+    animation: {
+      'fade-down': 'fade-down 0.2s ease-out',
+    },
   },
 },
   plugins: [],
