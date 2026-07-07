@@ -7,26 +7,26 @@ import CancelBookingButton from "./CancelBookingButton";
 const MyBookingsPage = async () => {
   const bookings = await getUserBookings();
 
-  const statusColors: Record<string, string> = {
-    pending: "bg-yellow-100 text-yellow-800",
-    pending_payment: "bg-purple-100 text-purple-800",
-    confirmed: "bg-green-100 text-green-800",
-    checked_in: "bg-blue-100 text-blue-800",
-    checked_out: "bg-gray-100 text-gray-800",
-    cancelled: "bg-red-100 text-red-800",
-    no_show: "bg-orange-100 text-orange-800",
+  const statusStyles: Record<string, string> = {
+    pending: "bg-beige text-stellar-grey",
+    pending_payment: "bg-beige text-brand",
+    confirmed: "bg-stellar-blue/10 text-stellar-blue",
+    checked_in: "bg-stellar-blue/10 text-stellar-blue",
+    checked_out: "bg-beige text-stellar-grey",
+    cancelled: "bg-red-50 text-red-600",
+    no_show: "bg-red-50 text-red-600",
   };
 
   return (
     <div>
-      <h2 className="text-xl font-semibold mb-6">My Bookings</h2>
+      <h2 className="font-heading text-xl font-medium mb-6 text-stellar-blue">My Bookings</h2>
 
       {bookings.length === 0 ? (
-        <div className="text-center py-16">
-          <p className="text-gray-500 mb-4">You have no bookings yet.</p>
+        <div className="text-center py-16 border border-stellar-light-grey">
+          <p className="text-stellar-grey mb-6">You have no bookings yet.</p>
           <Link
             href="/rooms"
-            className="inline-block bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors"
+            className="btn-primary px-8 py-3 text-sm"
           >
             Browse Rooms
           </Link>
@@ -36,18 +36,18 @@ const MyBookingsPage = async () => {
           {bookings.map((booking) => (
             <div
               key={booking.id}
-              className="bg-white dark:bg-gray-900 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-700"
+              className="border border-stellar-light-grey p-6"
             >
               <div className="flex items-start justify-between mb-4">
                 <div>
-                  <h3 className="font-semibold text-lg">{booking.roomName}</h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                  <h3 className="font-heading text-lg font-medium text-stellar-blue">{booking.roomName}</h3>
+                  <p className="text-xs text-stellar-grey mt-1">
                     Booking ID: {booking.id.slice(0, 8)}...
                   </p>
                 </div>
                 <span
-                  className={`px-3 py-1 rounded-full text-sm font-medium capitalize ${
-                    statusColors[booking.status] || "bg-gray-100"
+                  className={`px-3 py-1 text-xs font-medium uppercase tracking-[0.08em] ${
+                    statusStyles[booking.status] || "bg-beige text-stellar-grey"
                   }`}
                 >
                   {booking.status.replace("_", " ")}
@@ -56,35 +56,35 @@ const MyBookingsPage = async () => {
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                 <div>
-                  <span className="text-gray-500 dark:text-gray-400">Check In</span>
-                  <p className="font-medium">
+                  <span className="text-xs uppercase tracking-[0.08em] text-stellar-grey block mb-1">Check In</span>
+                  <p className="font-medium text-stellar-blue">
                     {new Date(booking.checkIn).toLocaleDateString()}
                   </p>
                 </div>
                 <div>
-                  <span className="text-gray-500 dark:text-gray-400">Check Out</span>
-                  <p className="font-medium">
+                  <span className="text-xs uppercase tracking-[0.08em] text-stellar-grey block mb-1">Check Out</span>
+                  <p className="font-medium text-stellar-blue">
                     {new Date(booking.checkOut).toLocaleDateString()}
                   </p>
                 </div>
                 <div>
-                  <span className="text-gray-500 dark:text-gray-400">Guests</span>
-                  <p className="font-medium">
+                  <span className="text-xs uppercase tracking-[0.08em] text-stellar-grey block mb-1">Guests</span>
+                  <p className="font-medium text-stellar-blue">
                     {booking.adults} Adults{booking.children > 0 ? `, ${booking.children} Children` : ""}
                   </p>
                 </div>
                 <div>
-                  <span className="text-gray-500 dark:text-gray-400">Total</span>
-                  <p className="font-medium text-primary">
+                  <span className="text-xs uppercase tracking-[0.08em] text-stellar-grey block mb-1">Total</span>
+                  <p className="font-heading font-medium text-brand">
                     GHS {Number(booking.totalPrice).toLocaleString()}
                   </p>
                 </div>
               </div>
 
               {(booking.status === "confirmed" || booking.status === "pending_payment") && (
-                <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                <div className="mt-4 pt-4 border-t border-stellar-light-grey">
                   {booking.status === "pending_payment" && (
-                    <p className="text-sm text-purple-600 dark:text-purple-400 mb-2">
+                    <p className="text-xs text-brand mb-2">
                       Awaiting payment — you can cancel if you changed your mind.
                     </p>
                   )}

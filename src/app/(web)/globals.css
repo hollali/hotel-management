@@ -2,4 +2,59 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
 
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    background-color: #B5A191;
+    color: #fff;
+  }
+}
+
+@layer components {
+  .kempinski-container {
+    @apply mx-auto w-full max-w-[1920px] px-4 md:px-8 lg:px-16 xl:px-[227px];
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-md border border-brand bg-transparent px-7 py-3 text-sm font-medium uppercase tracking-[0.07em] text-stellar-blue transition-colors hover:bg-brand hover:text-white;
+  }
+
+  .btn-primary-white {
+    @apply inline-flex items-center justify-center rounded-md border border-white bg-transparent px-7 py-3 text-sm font-medium uppercase tracking-[0.07em] text-white transition-colors hover:bg-white hover:text-stellar-blue;
+  }
+
+  .section-title {
+    @apply font-heading text-3xl md:text-4xl xl:text-5xl font-medium tracking-[-0.02em] text-stellar-blue;
+  }
+
+  .section-subtitle {
+    @apply text-stellar-grey text-base md:text-lg max-w-2xl;
+  }
+
+  .hover-underline {
+    @apply relative inline-block;
+  }
+
+  .hover-underline::after {
+    content: '';
+    @apply absolute bottom-0 left-0 h-px w-0 bg-brand opacity-0 transition-all duration-300;
+  }
+
+  .hover-underline:hover::after {
+    @apply w-full opacity-100;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}

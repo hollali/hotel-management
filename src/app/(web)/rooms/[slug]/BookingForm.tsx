@@ -69,36 +69,36 @@ const BookingForm = ({ room }: Props) => {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className="block text-sm font-medium mb-1">Check-In</label>
+        <label className="block text-xs font-medium mb-1.5 text-stellar-grey uppercase tracking-[0.08em]">Check-In</label>
         <input
           type="date"
           value={checkIn}
           onChange={(e) => setCheckIn(e.target.value)}
           min={today}
           required
-          className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 bg-transparent focus:outline-none focus:ring-2 focus:ring-primary"
+          className="w-full border border-stellar-light-grey px-4 py-3 bg-transparent text-stellar-blue focus:outline-none focus:border-brand transition-colors text-sm"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">Check-Out</label>
+        <label className="block text-xs font-medium mb-1.5 text-stellar-grey uppercase tracking-[0.08em]">Check-Out</label>
         <input
           type="date"
           value={checkOut}
           onChange={(e) => setCheckOut(e.target.value)}
           min={checkIn || today}
           required
-          className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 bg-transparent focus:outline-none focus:ring-2 focus:ring-primary"
+          className="w-full border border-stellar-light-grey px-4 py-3 bg-transparent text-stellar-blue focus:outline-none focus:border-brand transition-colors text-sm"
         />
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium mb-1">Adults</label>
+          <label className="block text-xs font-medium mb-1.5 text-stellar-grey uppercase tracking-[0.08em]">Adults</label>
           <select
             value={adults}
             onChange={(e) => setAdults(Number(e.target.value))}
-            className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 bg-transparent focus:outline-none focus:ring-2 focus:ring-primary"
+            className="w-full border border-stellar-light-grey px-4 py-3 bg-transparent text-stellar-blue focus:outline-none focus:border-brand transition-colors text-sm"
           >
             {[1, 2, 3, 4, 5].map((n) => (
               <option key={n} value={n}>{n}</option>
@@ -106,11 +106,11 @@ const BookingForm = ({ room }: Props) => {
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Children</label>
+          <label className="block text-xs font-medium mb-1.5 text-stellar-grey uppercase tracking-[0.08em]">Children</label>
           <select
             value={children}
             onChange={(e) => setChildren(Number(e.target.value))}
-            className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 bg-transparent focus:outline-none focus:ring-2 focus:ring-primary"
+            className="w-full border border-stellar-light-grey px-4 py-3 bg-transparent text-stellar-blue focus:outline-none focus:border-brand transition-colors text-sm"
           >
             {[0, 1, 2, 3, 4].map((n) => (
               <option key={n} value={n}>{n}</option>
@@ -119,27 +119,27 @@ const BookingForm = ({ room }: Props) => {
         </div>
       </div>
 
-      <div className="border-t border-gray-200 dark:border-gray-700 pt-4 space-y-2">
-        <div className="flex justify-between text-sm">
+      <div className="border-t border-stellar-light-grey pt-4 space-y-2">
+        <div className="flex justify-between text-sm text-stellar-grey">
           <span>GHS {pricePerNightAfterDiscount} x {days} {days > 1 ? "nights" : "night"}</span>
           <span>GHS {totalPrice}</span>
         </div>
         {room.discount > 0 && (
-          <div className="flex justify-between text-sm text-green-600">
+          <div className="flex justify-between text-sm text-brand">
             <span>Discount ({room.discount}%)</span>
             <span>-GHS {discountAmount * days}</span>
           </div>
         )}
-        <div className="flex justify-between font-bold text-lg border-t border-gray-200 dark:border-gray-700 pt-2">
-          <span>Total</span>
-          <span className="text-primary">GHS {totalPrice}</span>
+        <div className="flex justify-between font-heading font-medium text-lg border-t border-stellar-light-grey pt-2">
+          <span className="text-stellar-blue">Total</span>
+          <span className="text-brand">GHS {totalPrice}</span>
         </div>
       </div>
 
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50"
+        className="w-full bg-stellar-blue text-white py-3 font-medium text-sm uppercase tracking-[0.07em] hover:bg-brand transition-colors disabled:opacity-50"
       >
         {loading ? "Redirecting to Paystack..." : isSignedIn ? "Book Now & Pay" : "Sign In to Book"}
       </button>

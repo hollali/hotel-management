@@ -41,22 +41,24 @@ function PaymentCallbackInner() {
   }, [reference, router]);
 
   return (
-    <section className="container mx-auto px-4 py-16 text-center">
+    <section className="kempinski-container pt-28 pb-16 text-center">
       {status === "loading" && (
         <div>
-          <div className="animate-spin h-12 w-12 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4" />
-          <p className="text-lg text-gray-600 dark:text-gray-400">{message}</p>
+          <div className="animate-spin h-12 w-12 border-4 border-brand border-t-transparent mx-auto mb-4" />
+          <p className="text-stellar-grey text-lg">{message}</p>
         </div>
       )}
 
       {status === "success" && (
-        <div>
-          <div className="text-6xl mb-4">&#10003;</div>
-          <h1 className="text-2xl font-bold text-green-600 mb-2">Payment Successful!</h1>
-          <p className="text-gray-600 dark:text-gray-400 mb-6">{message}</p>
+        <div className="max-w-md mx-auto border border-stellar-light-grey p-10">
+          <div className="w-16 h-16 bg-brand/10 flex items-center justify-center mx-auto mb-6">
+            <span className="text-3xl text-brand font-heading">&#10003;</span>
+          </div>
+          <h1 className="font-heading text-2xl font-medium text-stellar-blue mb-2">Payment Successful!</h1>
+          <p className="text-stellar-grey mb-8">{message}</p>
           <Link
             href="/dashboard/bookings"
-            className="inline-block bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors"
+            className="btn-primary px-8 py-3 text-sm"
           >
             View My Bookings
           </Link>
@@ -64,20 +66,22 @@ function PaymentCallbackInner() {
       )}
 
       {status === "failed" && (
-        <div>
-          <div className="text-6xl mb-4">&#10007;</div>
-          <h1 className="text-2xl font-bold text-red-600 mb-2">Payment Failed</h1>
-          <p className="text-gray-600 dark:text-gray-400 mb-6">{message}</p>
-          <div className="flex gap-4 justify-center">
+        <div className="max-w-md mx-auto border border-stellar-light-grey p-10">
+          <div className="w-16 h-16 bg-red-50 flex items-center justify-center mx-auto mb-6">
+            <span className="text-3xl text-red-500 font-heading">&#10007;</span>
+          </div>
+          <h1 className="font-heading text-2xl font-medium text-stellar-blue mb-2">Payment Failed</h1>
+          <p className="text-stellar-grey mb-8">{message}</p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/rooms"
-              className="inline-block bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors"
+              className="btn-primary px-8 py-3 text-sm"
             >
               Try Again
             </Link>
             <Link
               href="/dashboard/bookings"
-              className="inline-block border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 px-6 py-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+              className="inline-flex items-center justify-center border border-stellar-light-grey px-8 py-3 text-sm font-medium text-stellar-grey hover:text-stellar-blue transition-colors"
             >
               My Bookings
             </Link>
@@ -91,9 +95,9 @@ function PaymentCallbackInner() {
 const PaymentCallbackPage = () => {
   return (
     <Suspense fallback={
-      <section className="container mx-auto px-4 py-16 text-center">
-        <div className="animate-spin h-12 w-12 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4" />
-        <p className="text-lg text-gray-600 dark:text-gray-400">Loading...</p>
+      <section className="kempinski-container pt-28 pb-16 text-center">
+        <div className="animate-spin h-12 w-12 border-4 border-brand border-t-transparent mx-auto mb-4" />
+        <p className="text-stellar-grey text-lg">Loading...</p>
       </section>
     }>
       <PaymentCallbackInner />

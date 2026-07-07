@@ -22,92 +22,95 @@ const ContactsPage = () => {
   };
 
   return (
-    <section className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl md:text-4xl font-bold text-center mb-8">Contact Us</h1>
-      <p className="text-gray-600 dark:text-gray-400 text-center mb-12 max-w-2xl mx-auto">
-        We would love to hear from you. Get in touch with us for any inquiries or reservations.
-      </p>
+    <section className="kempinski-container pt-28 pb-16 md:pb-24">
+      <div className="text-center mb-12 md:mb-16">
+        <h1 className="section-title mb-4">Contact Us</h1>
+        <p className="section-subtitle mx-auto">
+          We would love to hear from you. Get in touch with us for any inquiries or reservations.
+        </p>
+      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16">
         <div>
-          <h2 className="text-xl font-semibold mb-6">Get In Touch</h2>
-          <div className="space-y-4">
+          <h2 className="font-heading text-2xl font-medium mb-8 text-stellar-blue">Get In Touch</h2>
+          <div className="space-y-6">
             <Link
               href="https://maps.google.com/?q=Accra,+Ghana"
               target="_blank"
-              className="flex items-center py-3 hover:text-tertiary-light dark:hover:text-tertiary-dark"
+              className="flex items-center gap-4 text-stellar-grey hover:text-brand transition-colors"
             >
-              <BsMapFill className="text-tertiary-light dark:text-tertiary-dark text-xl" />
-              <span className="ml-4">Accra, Ghana</span>
+              <BsMapFill className="text-brand text-xl shrink-0" />
+              <span>Accra, Ghana</span>
             </Link>
             <Link
               href="mailto:hollali@example.com"
-              className="flex items-center py-3 hover:text-tertiary-light dark:hover:text-tertiary-dark"
+              className="flex items-center gap-4 text-stellar-grey hover:text-brand transition-colors"
             >
-              <BsFillSendFill className="text-tertiary-light dark:text-tertiary-dark text-xl" />
-              <span className="ml-4">hollali@example.com</span>
+              <BsFillSendFill className="text-brand text-xl shrink-0" />
+              <span>hollali@example.com</span>
             </Link>
             <Link
               href="tel:+233243658631"
-              className="flex items-center py-3 hover:text-tertiary-light dark:hover:text-tertiary-dark"
+              className="flex items-center gap-4 text-stellar-grey hover:text-brand transition-colors"
             >
-              <BsTelephoneOutbound className="text-tertiary-light dark:text-tertiary-dark text-xl" />
-              <span className="ml-4">+233 0243658631</span>
+              <BsTelephoneOutbound className="text-brand text-xl shrink-0" />
+              <span>+233 0243658631</span>
             </Link>
-            <div className="flex items-center py-3">
-              <BiMessageDetail className="text-tertiary-light dark:text-tertiary-dark text-xl" />
-              <span className="ml-4">24/7 Customer Support</span>
+            <div className="flex items-center gap-4 text-stellar-grey">
+              <BiMessageDetail className="text-brand text-xl shrink-0" />
+              <span>24/7 Customer Support</span>
             </div>
           </div>
         </div>
 
         <div>
-          <h2 className="text-xl font-semibold mb-6">Send Us a Message</h2>
+          <h2 className="font-heading text-2xl font-medium mb-8 text-stellar-blue">Send Us a Message</h2>
           {submitted ? (
-            <div className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 p-4 rounded-lg text-center">
-              Thank you! Your message has been sent.
+            <div className="bg-beige border border-brand/30 text-stellar-blue p-6 text-center">
+              <p className="font-heading text-lg mb-2">Thank You!</p>
+              <p className="text-stellar-grey text-sm">Your message has been sent successfully.</p>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-5">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium mb-1">
+                <label htmlFor="name" className="block text-xs uppercase tracking-[0.08em] text-stellar-grey mb-1.5 font-medium">
                   Name
                 </label>
                 <input
                   type="text"
                   id="name"
                   name="name"
-                  className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 bg-transparent focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full border border-stellar-light-grey px-4 py-3 bg-transparent text-stellar-blue focus:outline-none focus:border-brand transition-colors text-sm"
                   required
                 />
               </div>
               <div>
-                <label htmlFor="email" className="block text-sm font-medium mb-1">
+                <label htmlFor="email" className="block text-xs uppercase tracking-[0.08em] text-stellar-grey mb-1.5 font-medium">
                   Email
                 </label>
                 <input
                   type="email"
                   id="email"
                   name="email"
-                  className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 bg-transparent focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full border border-stellar-light-grey px-4 py-3 bg-transparent text-stellar-blue focus:outline-none focus:border-brand transition-colors text-sm"
                   required
                 />
               </div>
               <div>
-                <label htmlFor="message" className="block text-sm font-medium mb-1">
+                <label htmlFor="message" className="block text-xs uppercase tracking-[0.08em] text-stellar-grey mb-1.5 font-medium">
                   Message
                 </label>
                 <textarea
                   id="message"
                   name="message"
                   rows={5}
-                  className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 bg-transparent focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full border border-stellar-light-grey px-4 py-3 bg-transparent text-stellar-blue focus:outline-none focus:border-brand transition-colors text-sm resize-none"
                   required
                 />
               </div>
               <button
                 type="submit"
-                className="bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors"
+                className="btn-primary px-8 py-3 text-sm"
               >
                 Send Message
               </button>
@@ -116,10 +119,10 @@ const ContactsPage = () => {
         </div>
       </div>
 
-      <div className="mt-16">
-        <h2 className="text-xl font-semibold mb-6 text-center">Our Location</h2>
-        <div className="bg-gray-200 dark:bg-gray-700 h-80 rounded-xl flex items-center justify-center">
-          <p className="text-gray-500 dark:text-gray-400">Map will be displayed here</p>
+      <div className="mt-16 md:mt-24">
+        <h2 className="font-heading text-2xl font-medium mb-8 text-center text-stellar-blue">Our Location</h2>
+        <div className="bg-beige h-80 flex items-center justify-center border border-stellar-light-grey">
+          <p className="text-stellar-grey">Map will be displayed here</p>
         </div>
       </div>
     </section>

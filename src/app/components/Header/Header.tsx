@@ -2,14 +2,11 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useContext, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { FaUserCircle, FaTimes } from "react-icons/fa";
+import { FaTimes } from "react-icons/fa";
 import { HiOutlineMenuAlt3 } from "react-icons/hi";
-import { MdDarkMode, MdOutlineLightMode } from "react-icons/md";
 import { useUser, SignInButton, SignOutButton } from "@clerk/nextjs";
-
-import ThemeContext from "@/app/context/themeContext";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -18,7 +15,6 @@ const navLinks = [
 ];
 
 const Header = () => {
-  const { darkTheme, setDarkTheme } = useContext(ThemeContext);
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { isSignedIn, user } = useUser();
@@ -39,6 +35,8 @@ const Header = () => {
     return pathname.startsWith(href);
   };
 
+  const isHome = pathname === "/";
+
   const allLinks = [
     ...navLinks,
     ...(isSignedIn ? [{ href: "/dashboard", label: "Dashboard" }] : []),
@@ -46,42 +44,51 @@ const Header = () => {
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-shadow duration-300 bg-white dark:bg-black ${
-        scrolled ? "shadow-sm" : ""
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        scrolled
+          ? "bg-white/10 backdrop-blur-md shadow-sm"
+          : isHome
+            ? "bg-gradient-to-b from-black/40 to-transparent"
+            : "bg-transparent"
       }`}
     >
-      <div className="container mx-auto px-4 h-16 md:h-20 flex items-center justify-between">
-        {/* Mobile menu button */}
+      <div className="kempinski-container flex items-center justify-between h-20">
         <button
-          className="md:hidden text-2xl p-2 -ml-2"
+          className={`md:hidden p-2 -ml-2 transition-colors ${
+            scrolled || !isHome ? "text-stellar-blue" : "text-white"
+          }`}
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label="Toggle menu"
         >
-          {menuOpen ? <FaTimes /> : <HiOutlineMenuAlt3 />}
+          {menuOpen ? <FaTimes size={22} /> : <HiOutlineMenuAlt3 size={24} />}
         </button>
 
-        {/* Logo */}
         <Link href="/" className="flex-shrink-0">
           <Image
             src="/skyinn.png"
             alt="Sky Inn Logo"
-            width={50}
-            height={20}
-            className="object-contain h-8 md:h-10 w-auto"
+            width={60}
+            height={24}
+            className={`object-contain h-10 md:h-12 w-auto transition-all ${
+              scrolled || !isHome ? "" : "brightness-0 invert"
+            }`}
             priority
           />
         </Link>
 
-        {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-1">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              className={`px-4 py-2 text-sm font-medium tracking-[0.02em] transition-colors hover-underline ${
                 isActive(link.href)
-                  ? "bg-primary/10 text-primary"
-                  : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                  ? scrolled || !isHome
+                    ? "text-brand"
+                    : "text-white"
+                  : scrolled || !isHome
+                    ? "text-stellar-grey hover:text-stellar-blue"
+                    : "text-white/80 hover:text-white"
               }`}
             >
               {link.label}
@@ -90,10 +97,10 @@ const Header = () => {
           {isSignedIn && (
             <Link
               href="/dashboard"
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                isActive("/dashboard")
-                  ? "bg-primary/10 text-primary"
-                  : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+              className={`px-4 py-2 text-sm font-medium tracking-[0.02em] transition-colors hover-underline ${
+                scrolled || !isHome
+                  ? "text-stellar-grey hover:text-stellar-blue"
+                  : "text-white/80 hover:text-white"
               }`}
             >
               Dashboard
@@ -101,65 +108,62 @@ const Header = () => {
           )}
         </nav>
 
-        {/* Actions */}
-        <div className="flex items-center gap-2 md:gap-3">
+        <div className="flex items-center gap-3">
           {isSignedIn ? (
-            <Link href="/dashboard" className="flex items-center gap-2">
+            <Link
+              href="/dashboard"
+              className={`hidden sm:flex items-center gap-2 text-sm font-medium ${
+                scrolled || !isHome ? "text-stellar-blue" : "text-white"
+              }`}
+            >
               {user?.imageUrl ? (
                 <Image
                   src={user.imageUrl}
                   alt={user.fullName || "User"}
-                  width={32}
-                  height={32}
-                  className="rounded-full ring-2 ring-gray-200 dark:ring-gray-700"
+                  width={28}
+                  height={28}
+                  className="rounded-full ring-2 ring-brand/30"
                 />
               ) : (
-                <FaUserCircle className="text-2xl text-gray-500 dark:text-gray-400" />
+                <span className="text-brand">{user?.fullName || "Account"}</span>
               )}
             </Link>
           ) : (
             <SignInButton mode="modal">
-              <button className="hidden sm:inline-flex bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">
+              <button
+                className={`hidden sm:block text-sm font-medium tracking-[0.02em] transition-colors hover-underline ${
+                  scrolled || !isHome ? "text-stellar-grey hover:text-stellar-blue" : "text-white/80 hover:text-white"
+                }`}
+              >
                 Sign In
               </button>
             </SignInButton>
           )}
 
-          {isSignedIn && (
-            <SignOutButton>
-              <button className="hidden sm:inline-flex text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors">
-                Sign Out
-              </button>
-            </SignOutButton>
-          )}
-
-          <button
-            onClick={() => {
-              setDarkTheme(!darkTheme);
-              localStorage.setItem("hotel-theme", darkTheme ? "" : "true");
-            }}
-            className="p-2 rounded-lg text-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-            aria-label="Toggle theme"
+          <Link
+            href="/rooms"
+            className={`btn-primary-white text-xs md:text-sm px-4 md:px-7 py-2 md:py-3 ${
+              scrolled || !isHome
+                ? "!border-stellar-blue !text-stellar-blue hover:!bg-stellar-blue hover:!text-white"
+                : ""
+            }`}
           >
-            {darkTheme ? <MdOutlineLightMode /> : <MdDarkMode />}
-          </button>
+            Book Now
+          </Link>
         </div>
       </div>
 
-      {/* Mobile dropdown */}
       {menuOpen && (
-        <div
-          className="md:hidden border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-black shadow-lg animate-fade-down"
-        >
-          <div className="container mx-auto px-4 py-3 space-y-1">
+        <div className="md:hidden bg-white shadow-lg border-t border-stellar-light-grey animate-fade-down">
+          <div className="kempinski-container py-4 space-y-1">
             {allLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`block px-4 py-3 rounded-lg text-base font-medium transition-colors ${
+                className={`block px-4 py-3 text-base font-medium transition-colors ${
                   isActive(link.href)
-                    ? "bg-primary/10 text-primary"
-                    : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                    ? "text-brand bg-beige"
+                    : "text-stellar-blue hover:bg-beige"
                 }`}
               >
                 {link.label}
@@ -167,7 +171,7 @@ const Header = () => {
             ))}
           </div>
 
-          <div className="container mx-auto px-4 pb-4 pt-2 border-t border-gray-200 dark:border-gray-800">
+          <div className="kempinski-container pb-4 pt-2 border-t border-stellar-light-grey">
             {isSignedIn ? (
               <div className="flex items-center gap-3 px-4 py-2">
                 {user?.imageUrl ? (
@@ -178,32 +182,24 @@ const Header = () => {
                     height={36}
                     className="rounded-full"
                   />
-                ) : (
-                  <FaUserCircle className="text-2xl text-gray-400" />
-                )}
+                ) : null}
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium truncate">
+                  <p className="text-sm font-medium truncate text-stellar-blue">
                     {user?.fullName || user?.primaryEmailAddress?.emailAddress}
                   </p>
-                  <p className="text-xs text-gray-500 truncate">
-                    {user?.primaryEmailAddress?.emailAddress}
-                  </p>
                 </div>
+                <SignOutButton>
+                  <button className="text-sm text-stellar-grey hover:text-brand transition-colors">
+                    Sign Out
+                  </button>
+                </SignOutButton>
               </div>
             ) : (
               <SignInButton mode="modal">
-                <button className="w-full bg-primary text-white px-4 py-3 rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">
+                <button className="w-full btn-primary justify-center">
                   Sign In
                 </button>
               </SignInButton>
-            )}
-
-            {isSignedIn && (
-              <SignOutButton>
-                <button className="w-full text-left px-4 py-3 mt-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors">
-                  Sign Out
-                </button>
-              </SignOutButton>
             )}
           </div>
         </div>

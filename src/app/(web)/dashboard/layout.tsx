@@ -20,18 +20,18 @@ const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
   ];
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl md:text-3xl font-bold mb-8">Dashboard</h1>
+    <div className="kempinski-container pt-28 pb-16">
+      <h1 className="font-heading text-3xl font-medium mb-8 text-stellar-blue">Dashboard</h1>
       <div className="flex flex-col md:flex-row gap-8">
         <nav className="md:w-64 shrink-0">
-          <ul className="space-y-2">
+          <ul className="space-y-1">
             {links.map((link) => (
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  className="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  className="flex items-center gap-3 px-4 py-3 text-sm text-stellar-grey hover:bg-beige hover:text-stellar-blue transition-colors"
                 >
-                  <link.icon className="text-primary" />
+                  <link.icon className="text-brand" />
                   <span>{link.label}</span>
                 </Link>
               </li>

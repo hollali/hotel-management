@@ -22,10 +22,10 @@ const RoomDetailPage = async ({
   const coverUrl = room.coverImage?.url || room.coverImage?.file?.asset?.url;
 
   return (
-    <section className="container mx-auto px-4 py-8">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <section className="kempinski-container pt-28 pb-16 md:pb-24">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12">
         <div className="lg:col-span-2">
-          <div className="relative h-[400px] md:h-[500px] rounded-xl overflow-hidden mb-6">
+          <div className="relative h-[400px] md:h-[500px] overflow-hidden mb-6">
             {coverUrl ? (
               <Image
                 src={coverUrl}
@@ -35,15 +35,15 @@ const RoomDetailPage = async ({
                 priority
               />
             ) : (
-              <div className="w-full h-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
-                <span className="text-gray-400">No Image</span>
+              <div className="w-full h-full bg-beige flex items-center justify-center">
+                <span className="text-stellar-grey">No Image</span>
               </div>
             )}
           </div>
 
-          <div className="flex flex-wrap gap-4 mb-8">
+          <div className="flex flex-wrap gap-3 mb-8">
             {room.images?.slice(0, 4).map((img, i) => (
-              <div key={i} className="relative h-24 w-24 md:h-32 md:w-32 rounded-lg overflow-hidden">
+              <div key={i} className="relative h-24 w-24 md:h-28 md:w-28 overflow-hidden">
                 <Image
                   src={img.url || img.file?.asset?.url || ""}
                   alt={`${room.name} ${i + 1}`}
@@ -54,32 +54,34 @@ const RoomDetailPage = async ({
             ))}
           </div>
 
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">{room.name}</h1>
-          <div className="flex items-center space-x-6 mb-6 text-gray-600 dark:text-gray-400">
+          <h1 className="font-heading text-3xl md:text-4xl xl:text-5xl font-medium mb-4 text-stellar-blue">
+            {room.name}
+          </h1>
+          <div className="flex items-center flex-wrap gap-4 md:gap-6 mb-6 text-sm text-stellar-grey">
             {room.NumberOfBed && (
-              <span className="flex items-center">
-                <FaBed className="mr-2" />
+              <span className="flex items-center gap-2">
+                <FaBed className="text-brand" />
                 {room.NumberOfBed} {room.NumberOfBed > 1 ? "Beds" : "Bed"}
               </span>
             )}
             {room.maxGuests && (
-              <span className="flex items-center">
-                <FaUsers className="mr-2" />
+              <span className="flex items-center gap-2">
+                <FaUsers className="text-brand" />
                 Up to {room.maxGuests} Guests
               </span>
             )}
-            <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm capitalize">
+            <span className="px-3 py-1 bg-beige text-stellar-grey text-xs uppercase tracking-[0.08em]">
               {room.type}
             </span>
           </div>
 
-          <p className="text-gray-700 dark:text-gray-300 mb-8 leading-relaxed">
+          <p className="text-stellar-grey mb-8 leading-relaxed text-base md:text-lg">
             {room.description}
           </p>
 
           {room.SpecialNote && (
-            <div className="bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-400 p-4 mb-8 rounded-r-lg">
-              <p className="text-sm text-yellow-800 dark:text-yellow-200">
+            <div className="bg-beige border-l-4 border-brand p-4 mb-8">
+              <p className="text-sm text-stellar-blue">
                 {room.SpecialNote}
               </p>
             </div>
@@ -87,14 +89,14 @@ const RoomDetailPage = async ({
 
           {room.offeredAmenities && room.offeredAmenities.length > 0 && (
             <div className="mb-8">
-              <h2 className="text-xl font-semibold mb-4">Amenities</h2>
+              <h2 className="font-heading text-xl font-medium mb-4 text-stellar-blue">Amenities</h2>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                 {room.offeredAmenities.map((amenity, i) => (
                   <div
                     key={i}
-                    className="flex items-center space-x-2 text-gray-700 dark:text-gray-300"
+                    className="flex items-center gap-2 text-sm text-stellar-grey"
                   >
-                    <FaCheck className="text-green-500 text-sm" />
+                    <FaCheck className="text-brand text-xs" />
                     <span>{amenity.amenity}</span>
                   </div>
                 ))}
@@ -104,24 +106,24 @@ const RoomDetailPage = async ({
 
           {room.reviews && room.reviews.length > 0 && (
             <div className="mb-8">
-              <h2 className="text-xl font-semibold mb-4">
+              <h2 className="font-heading text-xl font-medium mb-4 text-stellar-blue">
                 Reviews ({room.reviews.length})
               </h2>
               <div className="space-y-4">
                 {room.reviews.map((review) => (
                   <div
                     key={review._id}
-                    className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg"
+                    className="bg-beige p-5"
                   >
                     <div className="flex items-center justify-between mb-2">
-                      <span className="font-medium">{review.guestName}</span>
-                      <div className="flex items-center">
+                      <span className="font-medium text-stellar-blue text-sm">{review.guestName}</span>
+                      <div className="flex items-center gap-0.5">
                         {Array.from({ length: review.userRating }).map((_, i) => (
-                          <FaStar key={i} className="text-yellow-400 text-sm" />
+                          <FaStar key={i} className="text-brand text-sm" />
                         ))}
                       </div>
                     </div>
-                    <p className="text-gray-600 dark:text-gray-400 text-sm">
+                    <p className="text-stellar-grey text-sm leading-relaxed">
                       {review.text}
                     </p>
                   </div>
@@ -132,16 +134,16 @@ const RoomDetailPage = async ({
         </div>
 
         <div className="lg:col-span-1">
-          <div className="sticky top-8 bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
-            <div className="mb-6">
+          <div className="sticky top-28 bg-white p-6 md:p-8 border border-stellar-light-grey">
+            <div className="mb-6 pb-6 border-b border-stellar-light-grey">
               <div className="flex items-baseline justify-between">
-                <span className="text-3xl font-bold text-primary">
+                <span className="font-heading text-3xl font-medium text-stellar-blue">
                   GHS {room.price}
                 </span>
-                <span className="text-gray-500 dark:text-gray-400">/night</span>
+                <span className="text-stellar-grey text-sm">/night</span>
               </div>
               {room.discount > 0 && (
-                <p className="text-sm text-green-600 mt-1">
+                <p className="text-sm text-brand mt-1">
                   {room.discount}% discount available
                 </p>
               )}
