@@ -1,4 +1,7 @@
 import { auth, currentUser } from "@clerk/nextjs/server";
+import { db } from "@/db";
+import { users } from "@/db/schema";
+import { eq } from "drizzle-orm";
 
 export async function getAuthSession() {
   return auth();
@@ -13,7 +16,23 @@ export async function getUserRole(): Promise<string | null> {
   const metadata = (session.sessionClaims as Record<string, unknown>)?.metadata as
     | Record<string, unknown>
     | undefined;
-  return (metadata?.role as string) ?? null;
+  const roleFromClaims = metadata?.role as string | undefined;
+  if (roleFromClaims) return roleFromClaims;
+
+  if (session.userId) {
+    try {
+      const [user] = await db
+        .select()
+        .from(users)
+        .where(eq(users.clerkId, session.userId))
+        .limit(1);
+      if (user) return user.role;
+    } catch {
+      // DB unavailable
+    }
+  }
+
+  return null;
 }
 
 export async function requireRole(role: string) {

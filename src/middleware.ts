@@ -6,9 +6,13 @@ const isPublicRoute = createRouteMatcher([
   "/auth(.*)",
   "/rooms(.*)",
   "/contacts(.*)",
+  "/faq",
+  "/about",
+  "/policies",
   "/payment(.*)",
   "/api/webhooks(.*)",
   "/api/paystack(.*)",
+  "/api/debug(.*)",
 ]);
 
 const isAdminRoute = createRouteMatcher(["/studio(.*)", "/dashboard/admin(.*)"]);
