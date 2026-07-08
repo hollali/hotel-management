@@ -23,7 +23,10 @@ const RoomDetailPage = async ({
 
   const coverUrl = room.coverImage?.url || room.coverImage?.file?.asset?.url;
   const dbReviews = await getRoomReviews(room._id);
-  const allReviews = [...(room.reviews || []), ...dbReviews];
+  const allReviews = [...(room.reviews || []), ...dbReviews].map((r) => ({
+    ...r,
+    id: "id" in r ? r.id : r._id,
+  }));
 
   return (
     <section className="kempinski-container pt-28 pb-16 md:pb-24">
@@ -114,9 +117,9 @@ const RoomDetailPage = async ({
                 Reviews ({allReviews.length})
               </h2>
               <div className="space-y-4">
-                {allReviews.map((review, i) => (
+                {allReviews.map((review) => (
                   <div
-                    key={"guestName" in review ? review.id || i : review._id}
+                    key={review.id}
                     className="bg-beige p-5"
                   >
                     <div className="flex items-center justify-between mb-2">
