@@ -10,15 +10,17 @@ const isPublicRoute = createRouteMatcher([
   "/about",
   "/policies",
   "/payment(.*)",
+  "/admin(.*)",
   "/api/webhooks(.*)",
   "/api/paystack(.*)",
   "/api/debug(.*)",
+  "/api/admin(.*)",
 ]);
 
-const isAdminRoute = createRouteMatcher(["/studio(.*)", "/dashboard/admin(.*)"]);
+const isOldAdminRoute = createRouteMatcher(["/studio(.*)", "/dashboard/admin(.*)"]);
 
 export default clerkMiddleware(async (auth, req) => {
-  if (isAdminRoute(req)) {
+  if (isOldAdminRoute(req)) {
     const session = await auth();
     if (!session.userId) {
       return NextResponse.redirect(new URL("/auth", req.url));
@@ -32,7 +34,7 @@ export default clerkMiddleware(async (auth, req) => {
     }
   }
 
-  if (!isPublicRoute(req) && !isAdminRoute(req)) {
+  if (!isPublicRoute(req) && !isOldAdminRoute(req)) {
     await auth.protect();
   }
 });

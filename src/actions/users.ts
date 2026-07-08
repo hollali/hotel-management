@@ -4,6 +4,7 @@ import { auth, clerkClient } from "@clerk/nextjs/server";
 import { db } from "@/db";
 import { users, bookings, payments, reviews, checkIns, checkOuts, activityLogs, notifications, invoices, guests, staffAssignments } from "@/db/schema";
 import { eq, or } from "drizzle-orm";
+import { requireAdmin } from "@/lib/admin-auth";
 import * as Sentry from "@sentry/nextjs";
 
 export async function getCurrentUserProfile() {
@@ -40,19 +41,7 @@ export async function updateUserProfile(data: {
 }
 
 export async function getAllUsers() {
-  const session = await auth();
-  if (!session.userId) {
-    throw new Error("Unauthorized");
-  }
-
-  const metadata = (session.sessionClaims as Record<string, unknown>)?.metadata as
-    | Record<string, unknown>
-    | undefined;
-  const role = metadata?.role as string | undefined;
-  if (role !== "admin") {
-    throw new Error("Unauthorized: Admin access required");
-  }
-
+  await requireAdmin();
   return db.select().from(users);
 }
 

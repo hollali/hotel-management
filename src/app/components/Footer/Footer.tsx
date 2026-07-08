@@ -82,6 +82,11 @@ const Footer = () => {
                   My Bookings
                 </Link>
               </li>
+              <li>
+                <Link href="/admin/login" className="text-stellar-grey hover:text-brand transition-colors text-sm">
+                  Admin Login
+                </Link>
+              </li>
             </ul>
           </div>
 

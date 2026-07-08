@@ -4,12 +4,12 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/db";
 import { bookings, checkIns, checkOuts, activityLogs } from "@/db/schema";
 import { eq } from "drizzle-orm";
-import { requireRole } from "@/app/libs/clerk";
+import { requireAdmin } from "@/lib/admin-auth";
 import { randomUUID } from "crypto";
 import * as Sentry from "@sentry/nextjs";
 
 export async function getConfirmedBookings() {
-  await requireRole("admin");
+  await requireAdmin();
 
   return db
     .select()
@@ -19,7 +19,7 @@ export async function getConfirmedBookings() {
 }
 
 export async function getCheckedInBookings() {
-  await requireRole("admin");
+  await requireAdmin();
 
   return db
     .select()
@@ -33,7 +33,7 @@ export async function checkInBooking(
   input: { idType?: string; idNumber?: string; notes?: string }
 ) {
   try {
-    await requireRole("admin");
+    await requireAdmin();
 
     const [booking] = await db
       .select()
@@ -87,7 +87,7 @@ export async function checkOutBooking(
   input: { damageCharges?: number; additionalCharges?: number; notes?: string; feedback?: string }
 ) {
   try {
-    await requireRole("admin");
+    await requireAdmin();
 
     const [booking] = await db
       .select()

@@ -4,11 +4,11 @@ import { auth } from "@clerk/nextjs/server";
 import { db } from "@/db";
 import { bookings, users, payments, activityLogs } from "@/db/schema";
 import { sql, eq, desc } from "drizzle-orm";
-import { requireRole } from "@/app/libs/clerk";
+import { requireAdmin } from "@/lib/admin-auth";
 import * as Sentry from "@sentry/nextjs";
 
 export async function getDashboardStats() {
-  await requireRole("admin");
+  await requireAdmin();
 
   const totalBookings = await db
     .select({ count: sql<number>`count(*)` })
@@ -45,7 +45,7 @@ export async function getDashboardStats() {
 }
 
 export async function updateUserRole(userId: string, role: string) {
-  await requireRole("admin");
+  await requireAdmin();
 
   await db
     .update(users)
@@ -59,7 +59,7 @@ export async function updateBookingStatus(
   bookingId: string,
   status: "confirmed" | "checked_in" | "checked_out" | "cancelled"
 ) {
-  await requireRole("admin");
+  await requireAdmin();
 
   await db
     .update(bookings)

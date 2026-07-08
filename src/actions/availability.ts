@@ -4,11 +4,11 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/db";
 import { roomAvailability } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
-import { requireRole } from "@/app/libs/clerk";
+import { requireAdmin } from "@/lib/admin-auth";
 import { randomUUID } from "crypto";
 
 export async function getAvailability(roomId: string) {
-  await requireRole("admin");
+  await requireAdmin();
 
   return db
     .select()
@@ -21,7 +21,7 @@ export async function toggleAvailability(
   date: string,
   isAvailable: boolean
 ) {
-  await requireRole("admin");
+  await requireAdmin();
 
   const existing = await db
     .select()
