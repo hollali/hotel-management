@@ -24,6 +24,11 @@ export async function getDashboardStats() {
     .orderBy(desc(bookings.createdAt))
     .limit(10);
 
+  const revenueResult = await db
+    .select({ total: sql<number>`coalesce(sum(amount), 0)` })
+    .from(payments)
+    .where(eq(payments.status, "completed"));
+
   const recentActivity = await db
     .select()
     .from(activityLogs)
@@ -33,6 +38,7 @@ export async function getDashboardStats() {
   return {
     totalBookings: totalBookings[0]?.count ?? 0,
     totalUsers: totalUsers[0]?.count ?? 0,
+    revenue: revenueResult[0]?.total ?? 0,
     recentBookings,
     recentActivity,
   };

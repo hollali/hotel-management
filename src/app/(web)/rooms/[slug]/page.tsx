@@ -1,8 +1,10 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getRoomBySlug } from "@/app/libs/sanityFetch";
+import { getRoomReviews } from "@/actions/reviews";
 import { FaBed, FaUsers, FaStar, FaCheck } from "react-icons/fa";
 import BookingForm from "./BookingForm";
+import ReviewForm from "./ReviewForm";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 60;
@@ -20,6 +22,8 @@ const RoomDetailPage = async ({
   }
 
   const coverUrl = room.coverImage?.url || room.coverImage?.file?.asset?.url;
+  const dbReviews = await getRoomReviews(room._id);
+  const allReviews = [...(room.reviews || []), ...dbReviews];
 
   return (
     <section className="kempinski-container pt-28 pb-16 md:pb-24">
@@ -104,22 +108,22 @@ const RoomDetailPage = async ({
             </div>
           )}
 
-          {room.reviews && room.reviews.length > 0 && (
+          {allReviews.length > 0 && (
             <div className="mb-8">
               <h2 className="font-heading text-xl font-medium mb-4 text-stellar-blue">
-                Reviews ({room.reviews.length})
+                Reviews ({allReviews.length})
               </h2>
               <div className="space-y-4">
-                {room.reviews.map((review) => (
+                {allReviews.map((review, i) => (
                   <div
-                    key={review._id}
+                    key={"guestName" in review ? review.id || i : review._id}
                     className="bg-beige p-5"
                   >
                     <div className="flex items-center justify-between mb-2">
                       <span className="font-medium text-stellar-blue text-sm">{review.guestName}</span>
                       <div className="flex items-center gap-0.5">
-                        {Array.from({ length: review.userRating }).map((_, i) => (
-                          <FaStar key={i} className="text-brand text-sm" />
+                        {Array.from({ length: review.userRating }).map((_, s) => (
+                          <FaStar key={s} className="text-brand text-sm" />
                         ))}
                       </div>
                     </div>
@@ -131,6 +135,8 @@ const RoomDetailPage = async ({
               </div>
             </div>
           )}
+
+          <ReviewForm roomId={room._id} roomName={room.name} />
         </div>
 
         <div className="lg:col-span-1">

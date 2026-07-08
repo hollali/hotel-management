@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FaCalendarCheck, FaCog, FaShieldAlt } from "react-icons/fa";
+import { FaCalendarCheck, FaCog, FaShieldAlt, FaUsers } from "react-icons/fa";
 import { auth } from "@clerk/nextjs/server";
 
 export const dynamic = "force-dynamic";
@@ -15,7 +15,10 @@ const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
     { href: "/dashboard/bookings", label: "My Bookings", icon: FaCalendarCheck },
     { href: "/dashboard/settings", label: "Settings", icon: FaCog },
     ...(isAdmin
-      ? [{ href: "/dashboard/admin", label: "Admin Panel", icon: FaShieldAlt }]
+      ? [
+          { href: "/dashboard/admin", label: "Dashboard", icon: FaShieldAlt },
+          { href: "/dashboard/admin/users", label: "Users", icon: FaUsers },
+        ]
       : []),
   ];
 

@@ -9,3 +9,4 @@ export * from "./roomAvailability";
 export * from "./staffAssignments";
 export * from "./notifications";
 export * from "./activityLogs";
+export * from "./reviews";

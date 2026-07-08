@@ -35,7 +35,7 @@ const AdminDashboardPage = async () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-stellar-grey text-xs uppercase tracking-[0.08em]">Revenue</p>
-              <p className="font-heading text-3xl font-medium mt-2 text-stellar-blue">GHS 0</p>
+              <p className="font-heading text-3xl font-medium mt-2 text-stellar-blue">GHS {stats.revenue.toLocaleString()}</p>
             </div>
             <FaDollarSign className="text-3xl text-brand/30" />
           </div>

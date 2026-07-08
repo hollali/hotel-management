@@ -108,6 +108,53 @@ export async function getHotelInfo() {
   );
 }
 
+export type SanityFAQ = {
+  _id: string;
+  question: string;
+  answer: string;
+  category: string;
+  order?: number;
+};
+
+export async function getFAQs() {
+  return sanityFetch<SanityFAQ[]>(
+    groq`*[_type == "faq"] | order(order asc) {
+      _id,
+      question,
+      answer,
+      category,
+      order
+    }`
+  );
+}
+
+export type SanityPromotion = {
+  _id: string;
+  title: string;
+  description?: string;
+  discountPercentage: number;
+  code: string;
+  isActive: boolean;
+  validFrom?: string;
+  validUntil?: string;
+};
+
+export async function getPromotionByCode(code: string) {
+  return sanityFetch<SanityPromotion | null>(
+    groq`*[_type == "promotion" && code == $code && isActive == true][0] {
+      _id,
+      title,
+      description,
+      discountPercentage,
+      code,
+      isActive,
+      validFrom,
+      validUntil
+    }`,
+    { code }
+  );
+}
+
 export async function getFeaturedRooms() {
   return sanityFetch<SanityRoom[]>(
     groq`*[_type == "hotelRoom" && isFeatured == true] | order(name asc) {

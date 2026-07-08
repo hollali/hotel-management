@@ -6,7 +6,7 @@ import { randomUUID } from "crypto";
 import { db } from "@/db";
 import { bookings, payments } from "@/db/schema";
 import { eq, and, gte, lte, desc } from "drizzle-orm";
-import { sanityFetch, groq } from "@/app/libs/sanityFetch";
+import { sanityFetch, groq, getPromotionByCode } from "@/app/libs/sanityFetch";
 import { ensureDbUser } from "@/app/libs/ensureUser";
 import * as Sentry from "@sentry/nextjs";
 
@@ -19,6 +19,7 @@ type InitializePaymentInput = {
   children: number;
   totalPrice: number;
   discount?: number;
+  promoCode?: string;
   specialRequests?: string;
 };
 
@@ -49,9 +50,31 @@ export async function initializePayment(input: InitializePaymentInput) {
       throw new Error("Check-out must be after check-in");
     }
 
-    const calculatedDiscount = room.discount > 0 ? (room.price * room.discount) / 100 : 0;
-    const calculatedPricePerNight = room.price - calculatedDiscount;
-    const calculatedTotalPrice = calculatedPricePerNight * numberOfDays;
+    let roomDiscountAmount = room.discount > 0 ? (room.price * room.discount) / 100 : 0;
+    let pricePerNight = room.price - roomDiscountAmount;
+    let promoDiscountAmount = 0;
+    let promoDiscountPct = 0;
+    let validatedPromoCode = "";
+
+    if (input.promoCode) {
+      const promo = await getPromotionByCode(input.promoCode);
+      if (!promo) {
+        throw new Error("Invalid promo code");
+      }
+      const now = new Date();
+      if (promo.validFrom && new Date(promo.validFrom) > now) {
+        throw new Error("Promo code is not yet valid");
+      }
+      if (promo.validUntil && new Date(promo.validUntil) < now) {
+        throw new Error("Promo code has expired");
+      }
+      promoDiscountPct = promo.discountPercentage;
+      promoDiscountAmount = (pricePerNight * promoDiscountPct) / 100;
+      pricePerNight = pricePerNight - promoDiscountAmount;
+      validatedPromoCode = input.promoCode;
+    }
+
+    const calculatedTotalPrice = pricePerNight * numberOfDays;
 
     if (Math.round(calculatedTotalPrice) !== Math.round(input.totalPrice)) {
       throw new Error("Price mismatch");
@@ -80,6 +103,7 @@ export async function initializePayment(input: InitializePaymentInput) {
     }
 
     const amountInPesewas = Math.round(calculatedTotalPrice * 100);
+    const combinedDiscount = roomDiscountAmount + promoDiscountAmount;
     const baseUrl = process.env.NEXT_PUBLIC_URL || "http://localhost:3000";
 
     const paystackRes = await fetch("https://api.paystack.co/transaction/initialize", {
@@ -105,6 +129,13 @@ export async function initializePayment(input: InitializePaymentInput) {
 
     const reference = paystackData.data.reference;
 
+    const specialRequests = [
+      input.specialRequests,
+      ...(validatedPromoCode ? [`Promo: ${validatedPromoCode} (${promoDiscountPct}% off)`] : []),
+    ]
+      .filter(Boolean)
+      .join(" | ");
+
     await db.insert(bookings).values({
       id: bookingId,
       userId: session.userId,
@@ -116,9 +147,9 @@ export async function initializePayment(input: InitializePaymentInput) {
       adults: input.adults,
       children: input.children,
       totalPrice: calculatedTotalPrice.toString(),
-      discount: (room.discount ?? 0).toString(),
+      discount: (combinedDiscount * numberOfDays).toString(),
       status: "pending_payment",
-      specialRequests: input.specialRequests,
+      specialRequests: specialRequests || null,
     });
 
     await db.insert(payments).values({
