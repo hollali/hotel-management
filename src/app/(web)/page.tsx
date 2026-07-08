@@ -6,8 +6,16 @@ import { getHotelInfo, getFeaturedRooms } from "@/app/libs/sanityFetch";
 export const dynamic = "force-dynamic";
 
 const Home = async () => {
-  const hotelInfo = await getHotelInfo();
-  const featuredRooms = await getFeaturedRooms();
+  let hotelInfo;
+  let featuredRooms: Awaited<ReturnType<typeof getFeaturedRooms>> = [];
+  try {
+    [hotelInfo, featuredRooms] = await Promise.all([
+      getHotelInfo(),
+      getFeaturedRooms(),
+    ]);
+  } catch (error) {
+    console.error("Failed to fetch Sanity data:", error);
+  }
 
   return (
     <div>

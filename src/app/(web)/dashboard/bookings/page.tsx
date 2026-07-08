@@ -5,7 +5,24 @@ import Link from "next/link";
 import CancelBookingButton from "./CancelBookingButton";
 
 const MyBookingsPage = async () => {
-  const bookings = await getUserBookings();
+  let bookings;
+  try {
+    bookings = await getUserBookings();
+  } catch (error) {
+    console.error("Failed to fetch bookings:", error);
+    return (
+      <div>
+        <h2 className="font-heading text-xl font-medium mb-6 text-stellar-blue">My Bookings</h2>
+        <div className="text-center py-16 border border-stellar-light-grey">
+          <p className="text-stellar-grey mb-2">Unable to load bookings right now.</p>
+          <p className="text-xs text-stellar-grey mb-6">The database service might be temporarily unavailable. Please try again.</p>
+          <Link href="/dashboard/bookings" className="btn-primary px-8 py-3 text-sm">
+            Retry
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   const statusStyles: Record<string, string> = {
     pending: "bg-beige text-stellar-grey",

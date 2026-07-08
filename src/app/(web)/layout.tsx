@@ -1,16 +1,10 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Jost } from "next/font/google";
+import { Jost } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import Header from "@/app/components/Header/Header";
 import "./globals.css";
 import Footer from "../components/Footer/Footer";
 import Toast from "../components/Toast/Toast";
-
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-heading",
-});
 
 const jost = Jost({
   subsets: ["latin"],
@@ -31,7 +25,7 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-      <html lang="en" className={`${playfair.variable} ${jost.variable}`}>
+      <html lang="en" className={jost.variable}>
         <body className="font-secondary">
           <main className="min-h-screen bg-white text-stellar-blue">
             <Toast />

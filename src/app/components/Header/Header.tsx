@@ -154,7 +154,7 @@ const Header = () => {
       </div>
 
       {menuOpen && (
-        <div className="md:hidden bg-white shadow-lg border-t border-stellar-light-grey animate-fade-down">
+        <div className="md:hidden bg-white/40 backdrop-blur-md animate-fade-down">
           <div className="kempinski-container py-4 space-y-1">
             {allLinks.map((link) => (
               <Link

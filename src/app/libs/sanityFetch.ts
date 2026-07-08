@@ -15,7 +15,18 @@ function getClient() {
 }
 
 export async function sanityFetch<T>(query: string, params: QueryParams = {}): Promise<T> {
-  return getClient().fetch<T>(query, params);
+  let lastError: unknown;
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      return await getClient().fetch<T>(query, params);
+    } catch (error) {
+      lastError = error;
+      if (attempt < 3) {
+        await new Promise((r) => setTimeout(r, attempt * 1000));
+      }
+    }
+  }
+  throw lastError;
 }
 
 export { groq };
