@@ -68,8 +68,8 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link href="/faq" className="text-stellar-grey hover:text-brand transition-colors text-sm">
-                  FAQ
+                <Link href="/about" className="text-stellar-grey hover:text-brand transition-colors text-sm">
+                  About Us
                 </Link>
               </li>
               <li>
@@ -103,9 +103,9 @@ const Footer = () => {
             &copy; {new Date().getFullYear()} Sky Inn Hotel. All rights reserved.
           </p>
           <div className="flex items-center gap-6 text-xs text-stellar-grey">
-            <Link href="/" className="hover:text-brand transition-colors">Privacy Policy</Link>
-            <Link href="/" className="hover:text-brand transition-colors">Terms of Service</Link>
-            <Link href="/" className="hover:text-brand transition-colors">Sitemap</Link>
+            <Link href="/policies" className="hover:text-brand transition-colors">Privacy Policy</Link>
+            <Link href="/policies" className="hover:text-brand transition-colors">Terms of Service</Link>
+            <Link href="/faq" className="hover:text-brand transition-colors">FAQ</Link>
           </div>
         </div>
       </div>

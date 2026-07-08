@@ -155,6 +155,47 @@ export async function getPromotionByCode(code: string) {
   );
 }
 
+export type SanityPageContent = {
+  _id: string;
+  page: string;
+  title?: string;
+  subtitle?: string;
+  content?: unknown[];
+  images?: { asset?: SanityAsset }[];
+};
+
+export async function getPageContent(page: string) {
+  return sanityFetch<SanityPageContent | null>(
+    groq`*[_type == "pageContent" && page == $page][0] {
+      _id,
+      page,
+      title,
+      subtitle,
+      content,
+      images[] { asset->{ url } }
+    }`,
+    { page }
+  );
+}
+
+export type SanityPolicy = {
+  _id: string;
+  title: string;
+  content: string;
+  category: string;
+};
+
+export async function getAllPolicies() {
+  return sanityFetch<SanityPolicy[]>(
+    groq`*[_type == "policy"] | order(category asc) {
+      _id,
+      title,
+      content,
+      category
+    }`
+  );
+}
+
 export async function getFeaturedRooms() {
   return sanityFetch<SanityRoom[]>(
     groq`*[_type == "hotelRoom" && isFeatured == true] | order(name asc) {

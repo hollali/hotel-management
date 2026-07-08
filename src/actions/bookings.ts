@@ -4,10 +4,11 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@clerk/nextjs/server";
 import { randomUUID } from "crypto";
 import { db } from "@/db";
-import { bookings, payments } from "@/db/schema";
+import { bookings, payments, users } from "@/db/schema";
 import { eq, and, gte, lte, desc } from "drizzle-orm";
 import { sanityFetch, groq, getPromotionByCode } from "@/app/libs/sanityFetch";
 import { ensureDbUser } from "@/app/libs/ensureUser";
+import { sendBookingConfirmation, sendBookingCancellation } from "@/app/libs/email";
 import * as Sentry from "@sentry/nextjs";
 
 type InitializePaymentInput = {
@@ -219,6 +220,32 @@ export async function verifyPayment(reference: string) {
         .set({ status: "completed", paidAt: new Date(), updatedAt: new Date() })
         .where(eq(payments.id, payment.id));
 
+      const [updatedBooking] = await db
+        .select()
+        .from(bookings)
+        .where(eq(bookings.id, bookingId))
+        .limit(1);
+
+      if (updatedBooking) {
+        const [user] = await db
+          .select()
+          .from(users)
+          .where(eq(users.clerkId, updatedBooking.userId))
+          .limit(1);
+
+        if (user) {
+          sendBookingConfirmation({
+            to: user.email,
+            guestName: user.firstName || "Guest",
+            roomName: updatedBooking.roomName,
+            checkIn: updatedBooking.checkIn.toISOString().split("T")[0],
+            checkOut: updatedBooking.checkOut.toISOString().split("T")[0],
+            totalPrice: updatedBooking.totalPrice,
+            bookingId: updatedBooking.id,
+          });
+        }
+      }
+
       revalidatePath("/dashboard/bookings");
       revalidatePath("/rooms");
 
@@ -280,10 +307,28 @@ export async function cancelBooking(bookingId: string) {
     throw new Error("Unauthorized");
   }
 
+  const [booking] = await db
+    .select()
+    .from(bookings)
+    .where(eq(bookings.id, bookingId))
+    .limit(1);
+
   await db
     .update(bookings)
     .set({ status: "cancelled", updatedAt: new Date() })
     .where(eq(bookings.id, bookingId));
+
+  if (booking) {
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.clerkId, session.userId))
+      .limit(1);
+
+    if (user) {
+      sendBookingCancellation(user.email, booking.roomName);
+    }
+  }
 
   revalidatePath("/dashboard/bookings");
   return { success: true };
