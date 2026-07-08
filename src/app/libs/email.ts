@@ -1,6 +1,9 @@
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY || "");
+function getResend() {
+  if (!process.env.RESEND_API_KEY) return null;
+  return new Resend(process.env.RESEND_API_KEY);
+}
 
 type SendBookingConfirmationInput = {
   to: string;
@@ -13,7 +16,8 @@ type SendBookingConfirmationInput = {
 };
 
 export async function sendBookingConfirmation(input: SendBookingConfirmationInput) {
-  if (!process.env.RESEND_API_KEY) return;
+  const resend = getResend();
+  if (!resend) return;
 
   try {
     await resend.emails.send({
@@ -64,7 +68,8 @@ export async function sendBookingConfirmation(input: SendBookingConfirmationInpu
 }
 
 export async function sendBookingCancellation(to: string, roomName: string) {
-  if (!process.env.RESEND_API_KEY) return;
+  const resend = getResend();
+  if (!resend) return;
 
   try {
     await resend.emails.send({
