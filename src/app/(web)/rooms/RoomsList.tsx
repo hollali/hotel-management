@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { FaBed, FaUsers, FaSearch } from "react-icons/fa";
+import { FaBed, FaUsers, FaSearch, FaSlidersH, FaTimes } from "react-icons/fa";
 import type { SanityRoom } from "@/app/libs/sanityFetch";
 
 const RoomsList = ({ rooms }: { rooms: SanityRoom[] }) => {
@@ -11,6 +11,15 @@ const RoomsList = ({ rooms }: { rooms: SanityRoom[] }) => {
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [maxPrice, setMaxPrice] = useState<string>("");
   const [sortBy, setSortBy] = useState<string>("name");
+  const [filtersOpen, setFiltersOpen] = useState(false);
+
+  const hasActiveFilters = typeFilter !== "all" || maxPrice !== "" || sortBy !== "name";
+
+  const clearFilters = () => {
+    setTypeFilter("all");
+    setMaxPrice("");
+    setSortBy("name");
+  };
 
   const filtered = useMemo(() => {
     let result = [...rooms];
@@ -31,16 +40,19 @@ const RoomsList = ({ rooms }: { rooms: SanityRoom[] }) => {
     if (maxPrice) {
       const price = Number(maxPrice);
       result = result.filter((r) => {
-        const effectivePrice = r.discount > 0
-          ? Math.round(r.price * (1 - r.discount / 100))
-          : r.price;
+        const effectivePrice =
+          r.discount > 0
+            ? Math.round(r.price * (1 - r.discount / 100))
+            : r.price;
         return effectivePrice <= price;
       });
     }
 
     result.sort((a, b) => {
-      const aPrice = a.discount > 0 ? Math.round(a.price * (1 - a.discount / 100)) : a.price;
-      const bPrice = b.discount > 0 ? Math.round(b.price * (1 - b.discount / 100)) : b.price;
+      const aPrice =
+        a.discount > 0 ? Math.round(a.price * (1 - a.discount / 100)) : a.price;
+      const bPrice =
+        b.discount > 0 ? Math.round(b.price * (1 - b.discount / 100)) : b.price;
       if (sortBy === "price_asc") return aPrice - bPrice;
       if (sortBy === "price_desc") return bPrice - aPrice;
       return a.name.localeCompare(b.name);
@@ -58,55 +70,105 @@ const RoomsList = ({ rooms }: { rooms: SanityRoom[] }) => {
         </p>
       </div>
 
-      <div className="flex flex-wrap gap-3 mb-8 p-4 border border-stellar-light-grey bg-beige/30">
-        <div className="flex items-center gap-2 flex-1 min-w-[200px]">
-          <FaSearch className="text-stellar-grey shrink-0" />
+      {/* Search Bar */}
+      <div className="max-w-3xl mx-auto mb-8">
+        <div className="relative flex items-center border border-stellar-light-grey bg-white transition-colors focus-within:border-brand">
+          <FaSearch className="absolute left-5 text-stellar-grey text-sm" />
           <input
             type="text"
-            placeholder="Search rooms..."
+            placeholder="Search rooms by name or description..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full border-none bg-transparent text-stellar-blue focus:outline-none text-sm"
+            className="w-full py-4 pl-12 pr-14 bg-transparent text-stellar-blue placeholder:text-stellar-grey/60 text-sm tracking-wide focus:outline-none"
           />
+          <button
+            onClick={() => setFiltersOpen(!filtersOpen)}
+            className={`absolute right-4 flex items-center gap-2 px-3 py-1.5 text-xs uppercase tracking-[0.08em] font-medium transition-colors ${
+              filtersOpen || hasActiveFilters
+                ? "bg-stellar-blue text-white"
+                : "bg-beige text-stellar-blue hover:bg-brand hover:text-white"
+            }`}
+            aria-label="Toggle filters"
+          >
+            <FaSlidersH className="text-[10px]" />
+            <span className="hidden sm:inline">Filters</span>
+          </button>
         </div>
-
-        <select
-          value={typeFilter}
-          onChange={(e) => setTypeFilter(e.target.value)}
-          className="border border-stellar-light-grey px-3 py-2 bg-white text-stellar-blue text-sm focus:outline-none focus:border-brand"
-        >
-          <option value="all">All Types</option>
-          <option value="basic">Basic</option>
-          <option value="luxury">Luxury</option>
-          <option value="suite">Suite</option>
-        </select>
-
-        <input
-          type="number"
-          placeholder="Max price (GHS)"
-          value={maxPrice}
-          onChange={(e) => setMaxPrice(e.target.value)}
-          className="border border-stellar-light-grey px-3 py-2 bg-white text-stellar-blue text-sm w-36 focus:outline-none focus:border-brand"
-        />
-
-        <select
-          value={sortBy}
-          onChange={(e) => setSortBy(e.target.value)}
-          className="border border-stellar-light-grey px-3 py-2 bg-white text-stellar-blue text-sm focus:outline-none focus:border-brand"
-        >
-          <option value="name">Name</option>
-          <option value="price_asc">Price: Low to High</option>
-          <option value="price_desc">Price: High to Low</option>
-        </select>
       </div>
 
-      <p className="text-sm text-stellar-grey mb-6">
+      {/* Filters Panel */}
+      <div
+        className={`max-w-3xl mx-auto overflow-hidden transition-all duration-300 ease-in-out ${
+          filtersOpen ? "max-h-60 opacity-100 mb-8" : "max-h-0 opacity-0"
+        }`}
+      >
+        <div className="flex flex-wrap items-center gap-4 p-5 border border-stellar-light-grey bg-beige/40">
+          <div className="flex items-center gap-2 flex-1 min-w-[160px]">
+            <label className="text-xs uppercase tracking-[0.08em] text-stellar-grey whitespace-nowrap">
+              Type
+            </label>
+            <select
+              value={typeFilter}
+              onChange={(e) => setTypeFilter(e.target.value)}
+              className="flex-1 border border-stellar-light-grey px-3 py-2.5 bg-white text-stellar-blue text-sm focus:outline-none focus:border-brand appearance-none cursor-pointer"
+            >
+              <option value="all">All</option>
+              <option value="basic">Basic</option>
+              <option value="luxury">Luxury</option>
+              <option value="suite">Suite</option>
+            </select>
+          </div>
+
+          <div className="flex items-center gap-2 flex-1 min-w-[160px]">
+            <label className="text-xs uppercase tracking-[0.08em] text-stellar-grey whitespace-nowrap">
+              Max Price
+            </label>
+            <input
+              type="number"
+              placeholder="GHS"
+              value={maxPrice}
+              onChange={(e) => setMaxPrice(e.target.value)}
+              className="flex-1 border border-stellar-light-grey px-3 py-2.5 bg-white text-stellar-blue text-sm focus:outline-none focus:border-brand"
+            />
+          </div>
+
+          <div className="flex items-center gap-2 flex-1 min-w-[160px]">
+            <label className="text-xs uppercase tracking-[0.08em] text-stellar-grey whitespace-nowrap">
+              Sort
+            </label>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="flex-1 border border-stellar-light-grey px-3 py-2.5 bg-white text-stellar-blue text-sm focus:outline-none focus:border-brand appearance-none cursor-pointer"
+            >
+              <option value="name">Name</option>
+              <option value="price_asc">Price: Low to High</option>
+              <option value="price_desc">Price: High to Low</option>
+            </select>
+          </div>
+
+          {hasActiveFilters && (
+            <button
+              onClick={clearFilters}
+              className="flex items-center gap-1.5 px-3 py-2.5 text-xs uppercase tracking-[0.08em] text-stellar-grey hover:text-brand transition-colors"
+            >
+              <FaTimes className="text-[10px]" />
+              Clear
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Results Count */}
+      <p className="text-sm text-stellar-grey mb-6 max-w-3xl mx-auto">
         {filtered.length} {filtered.length === 1 ? "room" : "rooms"} found
       </p>
 
+      {/* Room Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
         {filtered.map((room) => {
-          const coverUrl = room.coverImage?.url || room.coverImage?.file?.asset?.url;
+          const coverUrl =
+            room.coverImage?.url || room.coverImage?.file?.asset?.url;
 
           return (
             <Link
@@ -153,7 +215,8 @@ const RoomsList = ({ rooms }: { rooms: SanityRoom[] }) => {
                   {room.NumberOfBed && (
                     <span className="flex items-center gap-1">
                       <FaBed className="text-brand" />
-                      {room.NumberOfBed} {room.NumberOfBed > 1 ? "Beds" : "Bed"}
+                      {room.NumberOfBed}{" "}
+                      {room.NumberOfBed > 1 ? "Beds" : "Bed"}
                     </span>
                   )}
                   {room.maxGuests && (
@@ -169,9 +232,14 @@ const RoomsList = ({ rooms }: { rooms: SanityRoom[] }) => {
                     {room.discount > 0 ? (
                       <div>
                         <span className="font-heading text-xl font-medium text-stellar-blue">
-                          GHS {Math.round(room.price * (1 - room.discount / 100))}
+                          GHS{" "}
+                          {Math.round(
+                            room.price * (1 - room.discount / 100)
+                          )}
                         </span>
-                        <span className="text-xs text-stellar-grey ml-1">/night</span>
+                        <span className="text-xs text-stellar-grey ml-1">
+                          /night
+                        </span>
                         <span className="block text-xs line-through text-stellar-grey">
                           GHS {room.price}
                         </span>
@@ -181,7 +249,9 @@ const RoomsList = ({ rooms }: { rooms: SanityRoom[] }) => {
                         <span className="font-heading text-xl font-medium text-stellar-blue">
                           GHS {room.price}
                         </span>
-                        <span className="text-xs text-stellar-grey ml-1">/night</span>
+                        <span className="text-xs text-stellar-grey ml-1">
+                          /night
+                        </span>
                       </div>
                     )}
                   </div>
@@ -197,7 +267,17 @@ const RoomsList = ({ rooms }: { rooms: SanityRoom[] }) => {
 
       {filtered.length === 0 && (
         <div className="text-center py-20">
-          <p className="text-stellar-grey text-lg">No rooms match your filters.</p>
+          <p className="text-stellar-grey text-lg">
+            No rooms match your filters.
+          </p>
+          {hasActiveFilters && (
+            <button
+              onClick={clearFilters}
+              className="mt-4 text-sm text-brand hover:text-stellar-blue uppercase tracking-[0.07em] transition-colors"
+            >
+              Clear filters
+            </button>
+          )}
         </div>
       )}
     </section>
