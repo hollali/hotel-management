@@ -5,6 +5,7 @@ import { getRoomReviews } from "@/actions/reviews";
 import { FaBed, FaUsers, FaStar, FaCheck } from "react-icons/fa";
 import BookingForm from "./BookingForm";
 import ReviewForm from "./ReviewForm";
+import ImageGallery from "./ImageGallery";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 60;
@@ -21,7 +22,6 @@ const RoomDetailPage = async ({
     notFound();
   }
 
-  const coverUrl = room.coverImage?.url || room.coverImage?.file?.asset?.url;
   const dbReviews = await getRoomReviews(room._id);
   const allReviews = [...(room.reviews || []), ...dbReviews].map((r) => ({
     ...r,
@@ -32,34 +32,11 @@ const RoomDetailPage = async ({
     <section className="kempinski-container pt-28 pb-16 md:pb-24">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12">
         <div className="lg:col-span-2">
-          <div className="relative h-[400px] md:h-[500px] overflow-hidden mb-6">
-            {coverUrl ? (
-              <Image
-                src={coverUrl}
-                alt={room.name}
-                fill
-                className="object-cover"
-                priority
-              />
-            ) : (
-              <div className="w-full h-full bg-beige flex items-center justify-center">
-                <span className="text-stellar-grey">No Image</span>
-              </div>
-            )}
-          </div>
-
-          <div className="flex flex-wrap gap-3 mb-8">
-            {room.images?.slice(0, 4).map((img, i) => (
-              <div key={i} className="relative h-24 w-24 md:h-28 md:w-28 overflow-hidden">
-                <Image
-                  src={img.url || img.file?.asset?.url || ""}
-                  alt={`${room.name} ${i + 1}`}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-            ))}
-          </div>
+          <ImageGallery
+            coverImage={room.coverImage}
+            images={room.images}
+            roomName={room.name}
+          />
 
           <h1 className="font-heading text-3xl md:text-4xl xl:text-5xl font-medium mb-4 text-stellar-blue">
             {room.name}
