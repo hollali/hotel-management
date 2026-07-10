@@ -39,25 +39,25 @@ const ContactsPage = () => {
               target="_blank"
               className="flex items-center gap-4 text-stellar-grey hover:text-brand transition-colors"
             >
-              <BsMapFill className="text-brand text-xl shrink-0" />
+              <BsMapFill className="text-brand text-xl shrink-0 icon-hover" />
               <span>Accra, Ghana</span>
             </Link>
             <Link
               href="mailto:hollali@example.com"
               className="flex items-center gap-4 text-stellar-grey hover:text-brand transition-colors"
             >
-              <BsFillSendFill className="text-brand text-xl shrink-0" />
+              <BsFillSendFill className="text-brand text-xl shrink-0 icon-hover" />
               <span>hollali@example.com</span>
             </Link>
             <Link
               href="tel:+233243658631"
               className="flex items-center gap-4 text-stellar-grey hover:text-brand transition-colors"
             >
-              <BsTelephoneOutbound className="text-brand text-xl shrink-0" />
+              <BsTelephoneOutbound className="text-brand text-xl shrink-0 icon-hover" />
               <span>+233 0243658631</span>
             </Link>
             <div className="flex items-center gap-4 text-stellar-grey">
-              <BiMessageDetail className="text-brand text-xl shrink-0" />
+              <BiMessageDetail className="text-brand text-xl shrink-0 icon-pulse" />
               <span>24/7 Customer Support</span>
             </div>
           </div>
@@ -66,7 +66,7 @@ const ContactsPage = () => {
         <div>
           <h2 className="font-heading text-2xl font-medium mb-8 text-stellar-blue">Send Us a Message</h2>
           {submitted ? (
-            <div className="bg-beige border border-brand/30 text-stellar-blue p-6 text-center">
+            <div className="bg-beige border border-brand/30 text-stellar-blue p-6 text-center rounded-2xl">
               <p className="font-heading text-lg mb-2">Thank You!</p>
               <p className="text-stellar-grey text-sm">Your message has been sent successfully.</p>
             </div>
@@ -80,7 +80,7 @@ const ContactsPage = () => {
                   type="text"
                   id="name"
                   name="name"
-                  className="w-full border border-stellar-light-grey px-4 py-3 bg-transparent text-stellar-blue focus:outline-none focus:border-brand transition-colors text-sm"
+                  className="w-full border border-stellar-light-grey px-4 py-3 bg-transparent text-stellar-blue focus:outline-none focus:border-brand transition-colors text-sm rounded-full"
                   required
                 />
               </div>
@@ -92,7 +92,7 @@ const ContactsPage = () => {
                   type="email"
                   id="email"
                   name="email"
-                  className="w-full border border-stellar-light-grey px-4 py-3 bg-transparent text-stellar-blue focus:outline-none focus:border-brand transition-colors text-sm"
+                  className="w-full border border-stellar-light-grey px-4 py-3 bg-transparent text-stellar-blue focus:outline-none focus:border-brand transition-colors text-sm rounded-full"
                   required
                 />
               </div>
@@ -104,7 +104,7 @@ const ContactsPage = () => {
                   id="message"
                   name="message"
                   rows={5}
-                  className="w-full border border-stellar-light-grey px-4 py-3 bg-transparent text-stellar-blue focus:outline-none focus:border-brand transition-colors text-sm resize-none"
+                  className="w-full border border-stellar-light-grey px-4 py-3 bg-transparent text-stellar-blue focus:outline-none focus:border-brand transition-colors text-sm resize-none rounded-2xl"
                   required
                 />
               </div>

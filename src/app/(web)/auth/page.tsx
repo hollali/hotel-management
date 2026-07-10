@@ -15,7 +15,7 @@ const AuthPage = () => {
         <div className="flex mb-8 border border-stellar-light-grey">
           <button
             onClick={() => setMode("sign-in")}
-            className={`flex-1 py-3 text-sm font-medium uppercase tracking-[0.07em] transition-colors ${
+            className={`flex-1 py-3 text-sm font-medium uppercase tracking-[0.07em] transition-colors rounded-l-full ${
               mode === "sign-in"
                 ? "bg-stellar-blue text-white"
                 : "bg-transparent text-stellar-grey hover:text-stellar-blue"
@@ -25,7 +25,7 @@ const AuthPage = () => {
           </button>
           <button
             onClick={() => setMode("sign-up")}
-            className={`flex-1 py-3 text-sm font-medium uppercase tracking-[0.07em] transition-colors ${
+            className={`flex-1 py-3 text-sm font-medium uppercase tracking-[0.07em] transition-colors rounded-r-full ${
               mode === "sign-up"
                 ? "bg-stellar-blue text-white"
                 : "bg-transparent text-stellar-grey hover:text-stellar-blue"
@@ -39,16 +39,16 @@ const AuthPage = () => {
             appearance={{
               elements: {
                 rootBox: "mx-auto w-full",
-                card: "shadow-none border border-stellar-light-grey rounded-none",
+                card: "shadow-none border border-stellar-light-grey rounded-full",
                 headerTitle: "font-heading text-stellar-blue",
                 headerSubtitle: "text-stellar-grey",
-                formButtonPrimary: "bg-stellar-blue hover:bg-brand text-sm uppercase tracking-[0.07em] rounded-none",
+                formButtonPrimary: "bg-stellar-blue hover:bg-brand text-sm uppercase tracking-[0.07em] rounded-full",
                 formFieldLabel: "text-xs uppercase tracking-[0.08em] text-stellar-grey",
-                formFieldInput: "border-stellar-light-grey rounded-none focus:border-brand",
+                formFieldInput: "border-stellar-light-grey rounded-full focus:border-brand",
                 footerActionLink: "text-brand hover:text-stellar-blue",
                 dividerLine: "bg-stellar-light-grey",
                 dividerText: "text-stellar-grey",
-                socialButtonsBlockButton: "border-stellar-light-grey rounded-none hover:bg-beige",
+                socialButtonsBlockButton: "border-stellar-light-grey rounded-full hover:bg-beige",
                 socialButtonsBlockButtonText: "text-stellar-grey",
               },
             }}
@@ -58,16 +58,16 @@ const AuthPage = () => {
             appearance={{
               elements: {
                 rootBox: "mx-auto w-full",
-                card: "shadow-none border border-stellar-light-grey rounded-none",
+                card: "shadow-none border border-stellar-light-grey rounded-full",
                 headerTitle: "font-heading text-stellar-blue",
                 headerSubtitle: "text-stellar-grey",
-                formButtonPrimary: "bg-stellar-blue hover:bg-brand text-sm uppercase tracking-[0.07em] rounded-none",
+                formButtonPrimary: "bg-stellar-blue hover:bg-brand text-sm uppercase tracking-[0.07em] rounded-full",
                 formFieldLabel: "text-xs uppercase tracking-[0.08em] text-stellar-grey",
-                formFieldInput: "border-stellar-light-grey rounded-none focus:border-brand",
+                formFieldInput: "border-stellar-light-grey rounded-full focus:border-brand",
                 footerActionLink: "text-brand hover:text-stellar-blue",
                 dividerLine: "bg-stellar-light-grey",
                 dividerText: "text-stellar-grey",
-                socialButtonsBlockButton: "border-stellar-light-grey rounded-none hover:bg-beige",
+                socialButtonsBlockButton: "border-stellar-light-grey rounded-full hover:bg-beige",
                 socialButtonsBlockButtonText: "text-stellar-grey",
               },
             }}

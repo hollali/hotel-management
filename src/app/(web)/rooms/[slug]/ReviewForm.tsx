@@ -61,12 +61,12 @@ const ReviewForm = ({ roomId, roomName }: Props) => {
               onClick={() => setRating(star)}
               onMouseEnter={() => setHover(star)}
               onMouseLeave={() => setHover(0)}
-              className="text-2xl transition-colors"
+              className="text-2xl transition-all duration-200 hover:scale-125 rounded-full p-1"
             >
               <FaStar
                 className={
                   (hover || rating) >= star
-                    ? "text-brand"
+                    ? "text-brand icon-pulse"
                     : "text-stellar-light-grey"
                 }
               />
@@ -80,7 +80,7 @@ const ReviewForm = ({ roomId, roomName }: Props) => {
           placeholder="Share your experience..."
           rows={4}
           required
-          className="w-full border border-stellar-light-grey px-4 py-3 bg-white text-stellar-blue focus:outline-none focus:border-brand transition-colors text-sm resize-none"
+          className="w-full border border-stellar-light-grey px-4 py-3 bg-white text-stellar-blue focus:outline-none focus:border-brand transition-colors text-sm resize-none rounded-2xl"
         />
 
         <button

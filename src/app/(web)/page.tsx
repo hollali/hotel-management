@@ -48,7 +48,7 @@ const Home = async () => {
             </Link>
             <Link
               href="/contacts"
-              className="inline-flex items-center justify-center border border-white/30 text-white px-10 py-4 text-base font-medium uppercase tracking-[0.07em] transition-colors hover:bg-white/10"
+              className="inline-flex items-center justify-center border border-white/30 text-white px-10 py-4 text-base font-medium uppercase tracking-[0.07em] transition-colors hover:bg-white/10 rounded-full"
             >
               Contact Us
             </Link>
@@ -65,7 +65,7 @@ const Home = async () => {
         <div className="kempinski-container py-8 md:py-10">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="flex items-center gap-4">
-              <FaClock className="text-brand text-xl shrink-0" />
+              <FaClock className="text-brand text-xl shrink-0 icon-pulse" />
               <div>
                 <p className="text-stellar-grey text-xs uppercase tracking-[0.08em] mb-1">Check-In / Check-Out</p>
                 <p className="font-heading text-lg">
@@ -74,7 +74,7 @@ const Home = async () => {
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <FaMapMarkerAlt className="text-brand text-xl shrink-0" />
+              <FaMapMarkerAlt className="text-brand text-xl shrink-0 icon-bounce" />
               <div>
                 <p className="text-stellar-grey text-xs uppercase tracking-[0.08em] mb-1">Location</p>
                 <p className="font-heading text-lg">
@@ -85,7 +85,7 @@ const Home = async () => {
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <FaPhone className="text-brand text-xl shrink-0" />
+              <FaPhone className="text-brand text-xl shrink-0 icon-pulse" />
               <div>
                 <p className="text-stellar-grey text-xs uppercase tracking-[0.08em] mb-1">Reservations</p>
                 <p className="font-heading text-lg">{hotelInfo?.phone || "+233 0243658631"}</p>

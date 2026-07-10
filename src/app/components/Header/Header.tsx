@@ -55,13 +55,13 @@ const Header = () => {
     >
       <div className="kempinski-container flex items-center justify-between h-20">
         <button
-          className={`md:hidden p-2 -ml-2 transition-colors ${
+          className={`md:hidden p-2 -ml-2 transition-colors rounded-full ${
             scrolled || !isHome ? "text-stellar-blue" : "text-white"
           }`}
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label="Toggle menu"
         >
-          {menuOpen ? <FaTimes size={22} /> : <HiOutlineMenuAlt3 size={24} />}
+          {menuOpen ? <FaTimes size={22} className="icon-spin" /> : <HiOutlineMenuAlt3 size={24} className="icon-hover" />}
         </button>
 
         <Link href="/" className="flex-shrink-0">

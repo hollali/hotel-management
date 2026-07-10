@@ -34,7 +34,7 @@ const Footer = () => {
                   target="_blank"
                   className="flex items-center gap-3 text-stellar-grey hover:text-brand transition-colors text-sm"
                 >
-                  <BsMapFill className="text-brand shrink-0" />
+                  <BsMapFill className="text-brand shrink-0 icon-hover" />
                   <span>Accra, Ghana</span>
                 </Link>
               </li>
@@ -43,7 +43,7 @@ const Footer = () => {
                   href="mailto:hollali@example.com"
                   className="flex items-center gap-3 text-stellar-grey hover:text-brand transition-colors text-sm"
                 >
-                  <BsFillSendFill className="text-brand shrink-0" />
+                  <BsFillSendFill className="text-brand shrink-0 icon-hover" />
                   <span>hollali@example.com</span>
                 </Link>
               </li>
@@ -52,7 +52,7 @@ const Footer = () => {
                   href="tel:+233243658631"
                   className="flex items-center gap-3 text-stellar-grey hover:text-brand transition-colors text-sm"
                 >
-                  <BsTelephoneOutbound className="text-brand shrink-0" />
+                  <BsTelephoneOutbound className="text-brand shrink-0 icon-hover" />
                   <span>+233 0243658631</span>
                 </Link>
               </li>
@@ -117,10 +117,10 @@ const Footer = () => {
 
       <button
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        className="fixed bottom-6 right-6 z-40 w-10 h-10 bg-brand text-white flex items-center justify-center hover:bg-stellar-blue transition-colors"
+        className="fixed bottom-6 right-6 z-40 w-12 h-12 bg-brand text-white flex items-center justify-center hover:bg-stellar-blue transition-colors rounded-full"
         aria-label="Back to top"
       >
-        <BsArrowUp />
+        <BsArrowUp className="icon-bounce" />
       </button>
     </footer>
   );

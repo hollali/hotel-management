@@ -40,7 +40,7 @@ const SettingsActions = () => {
         <p className="text-stellar-grey text-sm mb-4">Sign out of your account on this device.</p>
         <button
           onClick={handleSignOut}
-          className="px-6 py-2 text-sm font-medium uppercase tracking-[0.07em] border border-stellar-light-grey text-stellar-grey hover:text-stellar-blue hover:border-stellar-blue transition-colors"
+          className="px-6 py-2 text-sm font-medium uppercase tracking-[0.07em] border border-stellar-light-grey text-stellar-grey hover:text-stellar-blue hover:border-stellar-blue transition-colors rounded-full"
         >
           Sign Out
         </button>
@@ -55,7 +55,7 @@ const SettingsActions = () => {
         {!showDelete ? (
           <button
             onClick={() => setShowDelete(true)}
-            className="px-6 py-2 text-sm font-medium uppercase tracking-[0.07em] bg-red-600 text-white hover:bg-red-700 transition-colors"
+            className="px-6 py-2 text-sm font-medium uppercase tracking-[0.07em] bg-red-600 text-white hover:bg-red-700 transition-colors rounded-full"
           >
             Delete Account
           </button>
@@ -69,13 +69,13 @@ const SettingsActions = () => {
               value={confirmText}
               onChange={(e) => setConfirmText(e.target.value)}
               placeholder="Type DELETE"
-              className="w-full max-w-xs border border-red-300 px-3 py-2 text-sm text-stellar-blue focus:outline-none focus:border-red-500"
+              className="w-full max-w-xs border border-red-300 px-3 py-2 text-sm text-stellar-blue focus:outline-none focus:border-red-500 rounded-full"
             />
             <div className="flex gap-3">
               <button
                 onClick={handleDeleteAccount}
                 disabled={confirmText !== "DELETE" || deleting}
-                className="px-6 py-2 text-sm font-medium uppercase tracking-[0.07em] bg-red-600 text-white hover:bg-red-700 transition-colors disabled:opacity-50"
+                className="px-6 py-2 text-sm font-medium uppercase tracking-[0.07em] bg-red-600 text-white hover:bg-red-700 transition-colors disabled:opacity-50 rounded-full"
               >
                 {deleting ? "Deleting..." : "Confirm Delete"}
               </button>

@@ -34,11 +34,35 @@
   }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center rounded-md border border-brand bg-transparent px-7 py-3 text-sm font-medium uppercase tracking-[0.07em] text-stellar-blue transition-colors hover:bg-brand hover:text-white;
+    @apply inline-flex items-center justify-center rounded-full border border-brand bg-transparent px-7 py-3 text-sm font-medium uppercase tracking-[0.07em] text-stellar-blue transition-all duration-300 hover:bg-brand hover:text-white;
   }
 
   .btn-primary-white {
-    @apply inline-flex items-center justify-center rounded-md border border-white bg-transparent px-7 py-3 text-sm font-medium uppercase tracking-[0.07em] text-white transition-colors hover:bg-white hover:text-stellar-blue;
+    @apply inline-flex items-center justify-center rounded-full border border-white bg-transparent px-7 py-3 text-sm font-medium uppercase tracking-[0.07em] text-white transition-all duration-300 hover:bg-white hover:text-stellar-blue;
+  }
+
+  .icon-hover {
+    @apply inline-flex transition-transform duration-300;
+  }
+
+  .icon-hover:hover {
+    transform: scale(1.15);
+  }
+
+  .icon-bounce {
+    @apply inline-flex transition-transform duration-300;
+  }
+
+  .icon-spin {
+    @apply inline-flex transition-transform duration-300;
+  }
+
+  .icon-spin:hover {
+    animation: icon-spin 0.6s ease;
+  }
+
+  .icon-pulse {
+    @apply inline-flex transition-all duration-300;
   }
 
   .section-title {
@@ -67,4 +91,28 @@
   .text-balance {
     text-wrap: balance;
   }
+}
+
+@keyframes icon-bounce {
+  0%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-4px); }
+  60% { transform: translateY(-2px); }
+}
+
+@keyframes icon-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes icon-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.2); opacity: 0.8; }
+}
+
+@keyframes icon-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-2px); }
+  40% { transform: translateX(2px); }
+  60% { transform: translateX(-1px); }
+  80% { transform: translateX(1px); }
 }

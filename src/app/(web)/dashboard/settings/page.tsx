@@ -13,12 +13,12 @@ const SettingsPage = async () => {
           appearance={{
             elements: {
               rootBox: "w-full",
-              card: "shadow-none border border-stellar-light-grey rounded-none",
+              card: "shadow-none border border-stellar-light-grey rounded-full",
               headerTitle: "font-heading text-stellar-blue",
               headerSubtitle: "text-stellar-grey",
-              formButtonPrimary: "bg-stellar-blue hover:bg-brand text-sm uppercase tracking-[0.07em] rounded-none",
+              formButtonPrimary: "bg-stellar-blue hover:bg-brand text-sm uppercase tracking-[0.07em] rounded-full",
               formFieldLabel: "text-xs uppercase tracking-[0.08em] text-stellar-grey",
-              formFieldInput: "border-stellar-light-grey rounded-none focus:border-brand",
+              formFieldInput: "border-stellar-light-grey rounded-full focus:border-brand",
               navbarButton: "text-stellar-grey hover:text-stellar-blue hover:bg-beige",
               menuButton: "text-stellar-grey hover:text-stellar-blue",
             },

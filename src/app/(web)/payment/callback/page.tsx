@@ -44,15 +44,15 @@ function PaymentCallbackInner() {
     <section className="kempinski-container pt-28 pb-16 text-center">
       {status === "loading" && (
         <div>
-          <div className="animate-spin h-12 w-12 border-4 border-brand border-t-transparent mx-auto mb-4" />
+          <div className="animate-spin h-12 w-12 border-4 border-brand border-t-transparent mx-auto mb-4 rounded-full" />
           <p className="text-stellar-grey text-lg">{message}</p>
         </div>
       )}
 
       {status === "success" && (
-        <div className="max-w-md mx-auto border border-stellar-light-grey p-10">
-          <div className="w-16 h-16 bg-brand/10 flex items-center justify-center mx-auto mb-6">
-            <span className="text-3xl text-brand font-heading">&#10003;</span>
+        <div className="max-w-md mx-auto border border-stellar-light-grey p-10 rounded-2xl">
+          <div className="w-16 h-16 bg-brand/10 flex items-center justify-center mx-auto mb-6 rounded-full">
+            <span className="text-3xl text-brand font-heading icon-pulse">&#10003;</span>
           </div>
           <h1 className="font-heading text-2xl font-medium text-stellar-blue mb-2">Payment Successful!</h1>
           <p className="text-stellar-grey mb-8">{message}</p>
@@ -66,9 +66,9 @@ function PaymentCallbackInner() {
       )}
 
       {status === "failed" && (
-        <div className="max-w-md mx-auto border border-stellar-light-grey p-10">
-          <div className="w-16 h-16 bg-red-50 flex items-center justify-center mx-auto mb-6">
-            <span className="text-3xl text-red-500 font-heading">&#10007;</span>
+        <div className="max-w-md mx-auto border border-stellar-light-grey p-10 rounded-2xl">
+          <div className="w-16 h-16 bg-red-50 flex items-center justify-center mx-auto mb-6 rounded-full">
+            <span className="text-3xl text-red-500 font-heading icon-pulse">&#10007;</span>
           </div>
           <h1 className="font-heading text-2xl font-medium text-stellar-blue mb-2">Payment Failed</h1>
           <p className="text-stellar-grey mb-8">{message}</p>
@@ -81,7 +81,7 @@ function PaymentCallbackInner() {
             </Link>
             <Link
               href="/dashboard/bookings"
-              className="inline-flex items-center justify-center border border-stellar-light-grey px-8 py-3 text-sm font-medium text-stellar-grey hover:text-stellar-blue transition-colors"
+              className="inline-flex items-center justify-center border border-stellar-light-grey px-8 py-3 text-sm font-medium text-stellar-grey hover:text-stellar-blue transition-colors rounded-full"
             >
               My Bookings
             </Link>
@@ -96,7 +96,7 @@ const PaymentCallbackPage = () => {
   return (
     <Suspense fallback={
       <section className="kempinski-container pt-28 pb-16 text-center">
-        <div className="animate-spin h-12 w-12 border-4 border-brand border-t-transparent mx-auto mb-4" />
+        <div className="animate-spin h-12 w-12 border-4 border-brand border-t-transparent mx-auto mb-4 rounded-full" />
         <p className="text-stellar-grey text-lg">Loading...</p>
       </section>
     }>

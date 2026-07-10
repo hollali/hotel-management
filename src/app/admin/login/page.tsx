@@ -163,7 +163,7 @@ const AdminLoginPage = () => {
                 name="username"
                 required
                 placeholder="Enter your username"
-                className="w-full border border-stellar-light-grey px-4 py-3.5 bg-white text-stellar-blue placeholder:text-stellar-grey/50 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand/20 transition-all text-sm rounded"
+                className="w-full border border-stellar-light-grey px-4 py-3.5 bg-white text-stellar-blue placeholder:text-stellar-grey/50 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand/20 transition-all text-sm rounded-full"
               />
             </motion.div>
 
@@ -177,7 +177,7 @@ const AdminLoginPage = () => {
                   name="password"
                   required
                   placeholder="Enter your password"
-                  className="w-full border border-stellar-light-grey px-4 py-3.5 bg-white text-stellar-blue placeholder:text-stellar-grey/50 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand/20 transition-all text-sm rounded pr-11"
+                  className="w-full border border-stellar-light-grey px-4 py-3.5 bg-white text-stellar-blue placeholder:text-stellar-grey/50 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand/20 transition-all text-sm rounded-full pr-11"
                 />
                 <motion.button
                   type="button"
@@ -203,7 +203,7 @@ const AdminLoginPage = () => {
                 disabled={loading}
                 whileHover={{ scale: 1.01 }}
                 whileTap={{ scale: 0.99 }}
-                className="w-full bg-stellar-blue text-white py-3.5 font-medium text-sm uppercase tracking-[0.07em] hover:bg-brand transition-colors disabled:opacity-50 rounded"
+                className="w-full bg-stellar-blue text-white py-3.5 font-medium text-sm uppercase tracking-[0.07em] hover:bg-brand transition-colors disabled:opacity-50 rounded-full"
               >
                 {loading ? (
                   <span className="flex items-center justify-center gap-2">

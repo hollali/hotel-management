@@ -108,7 +108,7 @@ const BookingForm = ({ room }: Props) => {
           onChange={(e) => setCheckIn(e.target.value)}
           min={today}
           required
-          className="w-full border border-stellar-light-grey px-4 py-3 bg-transparent text-stellar-blue focus:outline-none focus:border-brand transition-colors text-sm"
+          className="w-full border border-stellar-light-grey px-4 py-3 bg-transparent text-stellar-blue focus:outline-none focus:border-brand transition-colors text-sm rounded-full"
         />
       </div>
 
@@ -120,7 +120,7 @@ const BookingForm = ({ room }: Props) => {
           onChange={(e) => setCheckOut(e.target.value)}
           min={checkIn || today}
           required
-          className="w-full border border-stellar-light-grey px-4 py-3 bg-transparent text-stellar-blue focus:outline-none focus:border-brand transition-colors text-sm"
+          className="w-full border border-stellar-light-grey px-4 py-3 bg-transparent text-stellar-blue focus:outline-none focus:border-brand transition-colors text-sm rounded-full"
         />
       </div>
 
@@ -130,7 +130,7 @@ const BookingForm = ({ room }: Props) => {
           <select
             value={adults}
             onChange={(e) => setAdults(Number(e.target.value))}
-            className="w-full border border-stellar-light-grey px-4 py-3 bg-transparent text-stellar-blue focus:outline-none focus:border-brand transition-colors text-sm"
+            className="w-full border border-stellar-light-grey px-4 py-3 bg-transparent text-stellar-blue focus:outline-none focus:border-brand transition-colors text-sm rounded-full"
           >
             {[1, 2, 3, 4, 5].map((n) => (
               <option key={n} value={n}>{n}</option>
@@ -142,7 +142,7 @@ const BookingForm = ({ room }: Props) => {
           <select
             value={children}
             onChange={(e) => setChildren(Number(e.target.value))}
-            className="w-full border border-stellar-light-grey px-4 py-3 bg-transparent text-stellar-blue focus:outline-none focus:border-brand transition-colors text-sm"
+            className="w-full border border-stellar-light-grey px-4 py-3 bg-transparent text-stellar-blue focus:outline-none focus:border-brand transition-colors text-sm rounded-full"
           >
             {[0, 1, 2, 3, 4].map((n) => (
               <option key={n} value={n}>{n}</option>
@@ -158,13 +158,13 @@ const BookingForm = ({ room }: Props) => {
             value={promoCode}
             onChange={(e) => { setPromoCode(e.target.value); setPromoDiscount(0); setPromoError(""); }}
             placeholder="Promo code"
-            className="flex-1 border border-stellar-light-grey px-3 py-2 bg-transparent text-stellar-blue focus:outline-none focus:border-brand transition-colors text-sm"
+            className="flex-1 border border-stellar-light-grey px-3 py-2 bg-transparent text-stellar-blue focus:outline-none focus:border-brand transition-colors text-sm rounded-full"
           />
           <button
             type="button"
             onClick={handleApplyPromo}
             disabled={validatingPromo || !promoCode.trim()}
-            className="px-4 py-2 text-xs font-medium uppercase tracking-[0.07em] bg-stellar-blue text-white hover:bg-brand transition-colors disabled:opacity-50"
+            className="px-4 py-2 text-xs font-medium uppercase tracking-[0.07em] bg-stellar-blue text-white hover:bg-brand transition-colors disabled:opacity-50 rounded-full"
           >
             {validatingPromo ? "..." : "Apply"}
           </button>
@@ -200,7 +200,7 @@ const BookingForm = ({ room }: Props) => {
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-stellar-blue text-white py-3 font-medium text-sm uppercase tracking-[0.07em] hover:bg-brand transition-colors disabled:opacity-50"
+        className="w-full bg-stellar-blue text-white py-3 font-medium text-sm uppercase tracking-[0.07em] hover:bg-brand transition-colors disabled:opacity-50 rounded-full"
       >
         {loading ? "Redirecting to Paystack..." : isSignedIn ? "Book Now & Pay" : "Sign In to Book"}
       </button>
