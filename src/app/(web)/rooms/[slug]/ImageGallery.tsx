@@ -20,6 +20,8 @@ const ImageGallery = ({ coverImage, images = [], roomName }: Props) => {
     ...images.map((img) => img.url || img.file?.asset?.url || ""),
   ].filter(Boolean);
 
+  const activeSrc = allImages[activeIndex];
+
   const goNext = () => {
     setActiveIndex((prev) => (prev + 1) % allImages.length);
   };
@@ -38,7 +40,7 @@ const ImageGallery = ({ coverImage, images = [], roomName }: Props) => {
 
   return (
     <div className="flex flex-col-reverse lg:flex-row gap-4 mb-8">
-      {/* Thumbnail Strip - Right side on desktop, Bottom on mobile */}
+      {/* Thumbnail Strip */}
       {allImages.length > 1 && (
         <div className="flex lg:flex-col gap-3 overflow-x-auto lg:overflow-y-auto lg:overflow-x-hidden shrink-0">
           {allImages.map((src, i) => (
@@ -66,23 +68,15 @@ const ImageGallery = ({ coverImage, images = [], roomName }: Props) => {
 
       {/* Main Image */}
       <div className="relative flex-1 h-[350px] sm:h-[400px] md:h-[480px] lg:h-[520px] overflow-hidden bg-beige">
-        {allImages.map((src, i) => (
-          <div
-            key={i}
-            className={`absolute inset-0 transition-opacity duration-500 ${
-              i === activeIndex ? "opacity-100" : "opacity-0 pointer-events-none"
-            }`}
-          >
-            <Image
-              src={src}
-              alt={`${roomName} ${i + 1}`}
-              fill
-              className="object-cover"
-              priority={i === 0}
-              sizes="(max-width: 1024px) 100vw, 66vw"
-            />
-          </div>
-        ))}
+        <Image
+          key={activeIndex}
+          src={activeSrc}
+          alt={`${roomName} ${activeIndex + 1}`}
+          fill
+          className="object-cover"
+          priority
+          sizes="(max-width: 1024px) 100vw, 66vw"
+        />
 
         {/* Nav Arrows */}
         {allImages.length > 1 && (
