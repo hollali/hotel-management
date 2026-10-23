@@ -44,12 +44,19 @@ export async function getDashboardStats() {
   };
 }
 
+const ALLOWED_ROLES = ["guest", "receptionist", "manager", "admin"] as const;
+type AllowedRole = (typeof ALLOWED_ROLES)[number];
+
 export async function updateUserRole(userId: string, role: string) {
   await requireAdmin();
 
+  if (!userId || !ALLOWED_ROLES.includes(role as AllowedRole)) {
+    throw new Error("Invalid role");
+  }
+
   await db
     .update(users)
-    .set({ role: role as "guest" | "receptionist" | "manager" | "admin" })
+    .set({ role: role as AllowedRole })
     .where(eq(users.id, userId));
 
   return { success: true };

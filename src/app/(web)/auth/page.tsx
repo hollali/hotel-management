@@ -36,6 +36,7 @@ const AuthPage = () => {
         </div>
         {mode === "sign-in" ? (
           <SignIn
+            routing="hash"
             appearance={{
               elements: {
                 rootBox: "mx-auto w-full",
@@ -55,6 +56,7 @@ const AuthPage = () => {
           />
         ) : (
           <SignUp
+            routing="hash"
             appearance={{
               elements: {
                 rootBox: "mx-auto w-full",

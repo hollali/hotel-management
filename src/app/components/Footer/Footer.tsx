@@ -4,6 +4,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { BsFillSendFill, BsMapFill, BsTelephoneOutbound, BsArrowUp } from "react-icons/bs";
 
+const CONTACT_EMAIL =
+  process.env.NEXT_PUBLIC_CONTACT_EMAIL || "info@skyinnhotel.com";
+
 const Footer = () => {
   return (
     <footer className="bg-stellar-blue text-white">
@@ -32,7 +35,7 @@ const Footer = () => {
                 <Link
                   href="https://maps.google.com/?q=Accra,+Ghana"
                   target="_blank"
-                  className="flex items-center gap-3 text-stellar-grey hover:text-brand transition-colors text-sm"
+                  className="flex items-center gap-3 py-1 text-stellar-grey hover:text-brand transition-colors text-sm"
                 >
                   <BsMapFill className="text-brand shrink-0 icon-hover" />
                   <span>Accra, Ghana</span>
@@ -40,17 +43,17 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  href="mailto:hollali@example.com"
-                  className="flex items-center gap-3 text-stellar-grey hover:text-brand transition-colors text-sm"
+                  href={`mailto:${CONTACT_EMAIL}`}
+                  className="flex items-center gap-3 py-1 text-stellar-grey hover:text-brand transition-colors text-sm"
                 >
                   <BsFillSendFill className="text-brand shrink-0 icon-hover" />
-                  <span>hollali@example.com</span>
+                  <span>{CONTACT_EMAIL}</span>
                 </Link>
               </li>
               <li>
                 <Link
                   href="tel:+233243658631"
-                  className="flex items-center gap-3 text-stellar-grey hover:text-brand transition-colors text-sm"
+                  className="flex items-center gap-3 py-1 text-stellar-grey hover:text-brand transition-colors text-sm"
                 >
                   <BsTelephoneOutbound className="text-brand shrink-0 icon-hover" />
                   <span>+233 0243658631</span>
@@ -63,27 +66,27 @@ const Footer = () => {
             <h4 className="font-heading text-lg mb-6 text-brand">Quick Links</h4>
             <ul className="space-y-3">
               <li>
-                <Link href="/rooms" className="text-stellar-grey hover:text-brand transition-colors text-sm">
+                <Link href="/rooms" className="inline-flex min-h-6 items-center text-stellar-grey hover:text-brand transition-colors text-sm">
                   Rooms & Suites
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="text-stellar-grey hover:text-brand transition-colors text-sm">
+                <Link href="/about" className="inline-flex min-h-6 items-center text-stellar-grey hover:text-brand transition-colors text-sm">
                   About Us
                 </Link>
               </li>
               <li>
-                <Link href="/contacts" className="text-stellar-grey hover:text-brand transition-colors text-sm">
+                <Link href="/contacts" className="inline-flex min-h-6 items-center text-stellar-grey hover:text-brand transition-colors text-sm">
                   Contact Us
                 </Link>
               </li>
               <li>
-                <Link href="/dashboard/bookings" className="text-stellar-grey hover:text-brand transition-colors text-sm">
+                <Link href="/dashboard/bookings" className="inline-flex min-h-6 items-center text-stellar-grey hover:text-brand transition-colors text-sm">
                   My Bookings
                 </Link>
               </li>
               <li>
-                <Link href="/admin/login" className="text-stellar-grey hover:text-brand transition-colors text-sm">
+                <Link href="/admin/login" className="inline-flex min-h-6 items-center text-stellar-grey hover:text-brand transition-colors text-sm">
                   Admin Login
                 </Link>
               </li>
@@ -108,9 +111,9 @@ const Footer = () => {
             &copy; {new Date().getFullYear()} Sky Inn Hotel. All rights reserved.
           </p>
           <div className="flex items-center gap-6 text-xs text-stellar-grey">
-            <Link href="/policies" className="hover:text-brand transition-colors">Privacy Policy</Link>
-            <Link href="/policies" className="hover:text-brand transition-colors">Terms of Service</Link>
-            <Link href="/faq" className="hover:text-brand transition-colors">FAQ</Link>
+            <Link href="/policies" className="inline-flex min-h-6 items-center hover:text-brand transition-colors">Privacy Policy</Link>
+            <Link href="/policies" className="inline-flex min-h-6 items-center hover:text-brand transition-colors">Terms of Service</Link>
+            <Link href="/faq" className="inline-flex min-h-6 items-center hover:text-brand transition-colors">FAQ</Link>
           </div>
         </div>
       </div>

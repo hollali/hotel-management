@@ -4,8 +4,9 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@clerk/nextjs/server";
 import { randomUUID } from "crypto";
 import { db } from "@/db";
-import { reviews } from "@/db/schema";
+import { reviews, users } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
+import { sanityFetch, groq } from "@/app/libs/sanityFetch";
 import * as Sentry from "@sentry/nextjs";
 
 export async function submitReview(input: {
@@ -20,6 +21,39 @@ export async function submitReview(input: {
     if (!session.userId) {
       throw new Error("You must be signed in to submit a review");
     }
+
+    const text = typeof input.text === "string" ? input.text.trim() : "";
+    const rating = Number(input.userRating);
+
+    if (text.length < 3 || text.length > 2000) {
+      throw new Error("Review must be between 3 and 2000 characters");
+    }
+
+    if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+      throw new Error("Rating must be between 1 and 5 stars");
+    }
+
+    const room = await sanityFetch<{
+      name: string;
+      slug: { current: string };
+    }>(
+      groq`*[_type == "hotelRoom" && _id == $roomId][0] { name, slug }`,
+      { roomId: input.roomId }
+    );
+
+    if (!room?.slug?.current) {
+      throw new Error("Room not found");
+    }
+
+    const [dbUser] = await db
+      .select()
+      .from(users)
+      .where(eq(users.clerkId, session.userId))
+      .limit(1);
+
+    const guestName =
+      [dbUser?.firstName, dbUser?.lastName].filter(Boolean).join(" ").trim() ||
+      "Guest";
 
     const existing = await db
       .select()
@@ -37,13 +71,13 @@ export async function submitReview(input: {
       id: randomUUID(),
       userId: session.userId,
       roomId: input.roomId,
-      roomName: input.roomName,
-      guestName: input.guestName,
-      text: input.text,
-      userRating: input.userRating,
+      roomName: room.name,
+      guestName,
+      text,
+      userRating: rating,
     });
 
-    revalidatePath(`/rooms/${input.roomName}`);
+    revalidatePath(`/rooms/${room.slug.current}`);
     return { success: true };
   } catch (error) {
     Sentry.captureException(error);

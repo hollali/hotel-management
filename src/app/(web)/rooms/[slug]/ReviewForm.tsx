@@ -53,11 +53,13 @@ const ReviewForm = ({ roomId, roomName }: Props) => {
     <div className="mb-8">
       <h2 className="font-heading text-xl font-medium mb-4 text-stellar-blue">Write a Review</h2>
       <form onSubmit={handleSubmit} className="bg-beige p-5 space-y-4">
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1" role="group" aria-label="Rating">
           {[1, 2, 3, 4, 5].map((star) => (
             <button
               key={star}
               type="button"
+              aria-label={`Rate ${star} star${star === 1 ? "" : "s"}`}
+              aria-pressed={rating === star}
               onClick={() => setRating(star)}
               onMouseEnter={() => setHover(star)}
               onMouseLeave={() => setHover(0)}

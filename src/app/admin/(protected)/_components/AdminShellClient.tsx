@@ -31,6 +31,8 @@ const linkVariants = {
 
 const AdminShellClient = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
+  const current =
+    sidebarLinks.find((link) => link.href === pathname)?.label ?? "Dashboard";
 
   return (
     <>
@@ -68,6 +70,7 @@ const AdminShellClient = ({ children }: { children: React.ReactNode }) => {
               >
                 <Link
                   href={link.href}
+                  aria-current={isActive ? "page" : undefined}
                   className={`flex items-center gap-3.5 px-4 py-2.5 text-sm rounded-lg group relative ${
                     isActive
                       ? "text-white bg-white/10"
@@ -119,7 +122,7 @@ const AdminShellClient = ({ children }: { children: React.ReactNode }) => {
         </motion.div>
       </motion.aside>
 
-      <main className="flex-1 min-h-screen">
+      <main className="flex-1 min-w-0 min-h-screen">
         <motion.header
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -127,7 +130,7 @@ const AdminShellClient = ({ children }: { children: React.ReactNode }) => {
           className="h-16 bg-white border-b border-stellar-light-grey/50 flex items-center justify-between px-6 md:px-8 sticky top-0 z-30"
         >
           <div>
-            <h1 className="font-heading text-xl text-stellar-blue">Dashboard</h1>
+            <h1 className="font-heading text-xl text-stellar-blue">{current}</h1>
           </div>
           <motion.div
             initial={{ opacity: 0, scale: 0 }}
@@ -147,6 +150,49 @@ const AdminShellClient = ({ children }: { children: React.ReactNode }) => {
             <span className="text-sm text-stellar-grey hidden sm:block">Admin</span>
           </motion.div>
         </motion.header>
+
+        <nav
+          aria-label="Admin sections"
+          className="md:hidden sticky top-16 z-20 w-full max-w-full bg-white border-b border-stellar-light-grey/50 overflow-x-auto"
+        >
+          <div className="flex items-center gap-1 px-3 py-2 min-w-max">
+            {sidebarLinks.map((link) => {
+              const isActive = pathname === link.href;
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  aria-current={isActive ? "page" : undefined}
+                  className={`inline-flex min-h-11 items-center gap-2 px-3 text-xs font-medium rounded-full whitespace-nowrap transition-colors ${
+                    isActive
+                      ? "bg-stellar-blue text-white"
+                      : "text-stellar-grey hover:bg-beige"
+                  }`}
+                >
+                  <link.icon className="text-sm" />
+                  {link.label}
+                </Link>
+              );
+            })}
+            <Link
+              href="/"
+              className="inline-flex min-h-11 items-center gap-2 px-3 text-xs font-medium rounded-full whitespace-nowrap text-stellar-grey hover:bg-beige transition-colors"
+            >
+              <FaHome className="text-sm" />
+              Site
+            </Link>
+            <form action="/api/admin/logout" method="POST">
+              <button
+                type="submit"
+                className="inline-flex min-h-11 items-center gap-2 px-3 text-xs font-medium rounded-full whitespace-nowrap text-stellar-grey hover:bg-beige transition-colors"
+              >
+                <FaSignOutAlt className="text-sm" />
+                Sign Out
+              </button>
+            </form>
+          </div>
+        </nav>
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

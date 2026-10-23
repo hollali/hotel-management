@@ -4,8 +4,8 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@clerk/nextjs/server";
 import { randomUUID } from "crypto";
 import { db } from "@/db";
-import { bookings, payments, users } from "@/db/schema";
-import { eq, and, gte, lte, desc } from "drizzle-orm";
+import { bookings, payments, users, roomAvailability } from "@/db/schema";
+import { eq, and, gte, lte, lt, desc, inArray } from "drizzle-orm";
 import { sanityFetch, groq, getPromotionByCode } from "@/app/libs/sanityFetch";
 import { ensureDbUser } from "@/app/libs/ensureUser";
 import { sendBookingConfirmation, sendBookingCancellation } from "@/app/libs/email";
@@ -34,8 +34,13 @@ export async function initializePayment(input: InitializePaymentInput) {
     const dbUser = await ensureDbUser();
     const email = dbUser.email;
 
-    const room = await sanityFetch<{ price: number; discount: number }>(
-      groq`*[_type == "hotelRoom" && _id == $roomId][0] { price, discount }`,
+    const room = await sanityFetch<{
+      name: string;
+      price: number;
+      discount: number;
+      maxGuests?: number;
+    }>(
+      groq`*[_type == "hotelRoom" && _id == $roomId][0] { name, price, discount, maxGuests }`,
       { roomId: input.roomId }
     );
 
@@ -43,12 +48,41 @@ export async function initializePayment(input: InitializePaymentInput) {
       throw new Error("Room not found");
     }
 
-    const numberOfDays = Math.ceil(
-      (input.checkOut.getTime() - input.checkIn.getTime()) / (1000 * 60 * 60 * 24)
+    const checkIn = new Date(input.checkIn);
+    const checkOut = new Date(input.checkOut);
+
+    if (Number.isNaN(checkIn.getTime()) || Number.isNaN(checkOut.getTime())) {
+      throw new Error("Invalid booking dates");
+    }
+
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
+
+    if (checkIn < startOfToday) {
+      throw new Error("Check-in date cannot be in the past");
+    }
+
+    const numberOfDays = Math.round(
+      (checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24)
     );
 
     if (numberOfDays < 1) {
       throw new Error("Check-out must be after check-in");
+    }
+
+    const adults = Number(input.adults);
+    const children = Number(input.children);
+
+    if (!Number.isInteger(adults) || adults < 1 || adults > 20) {
+      throw new Error("Invalid number of adults");
+    }
+
+    if (!Number.isInteger(children) || children < 0 || children > 20) {
+      throw new Error("Invalid number of children");
+    }
+
+    if (room.maxGuests && adults + children > room.maxGuests) {
+      throw new Error(`This room accommodates up to ${room.maxGuests} guests`);
     }
 
     let roomDiscountAmount = room.discount > 0 ? (room.price * room.discount) / 100 : 0;
@@ -82,18 +116,41 @@ export async function initializePayment(input: InitializePaymentInput) {
     }
 
     const existingBooking = await db
-      .select()
+      .select({ id: bookings.id })
       .from(bookings)
       .where(
         and(
           eq(bookings.roomId, input.roomId),
-          eq(bookings.status, "confirmed"),
-          lte(bookings.checkIn, input.checkOut),
-          gte(bookings.checkOut, input.checkIn)
+          inArray(bookings.status, [
+            "pending",
+            "pending_payment",
+            "confirmed",
+            "checked_in",
+          ]),
+          lte(bookings.checkIn, checkOut),
+          gte(bookings.checkOut, checkIn)
         )
-      );
+      )
+      .limit(1);
 
     if (existingBooking.length > 0) {
+      throw new Error("Room is not available for the selected dates");
+    }
+
+    const blockedDates = await db
+      .select({ id: roomAvailability.id })
+      .from(roomAvailability)
+      .where(
+        and(
+          eq(roomAvailability.roomId, input.roomId),
+          eq(roomAvailability.isAvailable, false),
+          gte(roomAvailability.date, checkIn.toISOString().slice(0, 10)),
+          lt(roomAvailability.date, checkOut.toISOString().slice(0, 10))
+        )
+      )
+      .limit(1);
+
+    if (blockedDates.length > 0) {
       throw new Error("Room is not available for the selected dates");
     }
 
@@ -139,14 +196,14 @@ export async function initializePayment(input: InitializePaymentInput) {
 
     await db.insert(bookings).values({
       id: bookingId,
-      userId: session.userId,
+      userId: dbUser.id,
       roomId: input.roomId,
-      roomName: input.roomName,
-      checkIn: input.checkIn,
-      checkOut: input.checkOut,
+      roomName: room.name,
+      checkIn,
+      checkOut,
       numberOfDays,
-      adults: input.adults,
-      children: input.children,
+      adults,
+      children,
       totalPrice: calculatedTotalPrice.toString(),
       discount: (combinedDiscount * numberOfDays).toString(),
       status: "pending_payment",
@@ -209,7 +266,19 @@ export async function verifyPayment(reference: string) {
       throw new Error("Payment record not found");
     }
 
+    if (payment.bookingId !== bookingId) {
+      throw new Error("Payment does not match booking");
+    }
+
     if (transactionStatus === "success") {
+      const expectedAmount = Math.round(Number(payment.amount) * 100);
+      const paidAmount = Number(paystackData.data.amount);
+      const currency = paystackData.data.currency;
+
+      if (paidAmount !== expectedAmount || currency !== payment.currency) {
+        throw new Error("Payment amount or currency mismatch");
+      }
+
       await db
         .update(bookings)
         .set({ status: "confirmed", updatedAt: new Date() })
@@ -310,13 +379,25 @@ export async function cancelBooking(bookingId: string) {
   const [booking] = await db
     .select()
     .from(bookings)
-    .where(eq(bookings.id, bookingId))
+    .where(
+      and(eq(bookings.id, bookingId), eq(bookings.userId, session.userId))
+    )
     .limit(1);
+
+  if (!booking) {
+    throw new Error("Booking not found");
+  }
+
+  if (["cancelled", "checked_out", "no_show"].includes(booking.status)) {
+    throw new Error("This booking can no longer be cancelled");
+  }
 
   await db
     .update(bookings)
     .set({ status: "cancelled", updatedAt: new Date() })
-    .where(eq(bookings.id, bookingId));
+    .where(
+      and(eq(bookings.id, bookingId), eq(bookings.userId, session.userId))
+    );
 
   if (booking) {
     const [user] = await db

@@ -10,18 +10,34 @@ export async function POST(req: Request) {
   }
 
   const body = await req.text();
-  const signature = req.headers.get("x-paystack-signature");
+  const signature = req.headers.get("x-paystack-signature") ?? "";
+  const expected = crypto.createHmac("sha512", secret).update(body).digest("hex");
 
-  const hash = crypto.createHmac("sha512", secret).update(body).digest("hex");
+  const signatureBuffer = Buffer.from(signature, "utf8");
+  const expectedBuffer = Buffer.from(expected, "utf8");
 
-  if (hash !== signature) {
+  if (
+    signatureBuffer.length !== expectedBuffer.length ||
+    !crypto.timingSafeEqual(signatureBuffer, expectedBuffer)
+  ) {
     return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
   }
 
-  const event = JSON.parse(body);
+  let event: { event?: string; data?: { reference?: string } };
+
+  try {
+    event = JSON.parse(body);
+  } catch {
+    return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
+  }
 
   if (event.event === "charge.success") {
-    const reference = event.data.reference;
+    const reference = event.data?.reference;
+
+    if (!reference) {
+      return NextResponse.json({ error: "Missing reference" }, { status: 400 });
+    }
+
     try {
       await verifyPayment(reference);
     } catch (err) {

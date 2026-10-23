@@ -5,20 +5,37 @@ import { BsFillSendFill, BsMapFill, BsTelephoneOutbound } from "react-icons/bs";
 import { BiMessageDetail } from "react-icons/bi";
 import Link from "next/link";
 
+const CONTACT_EMAIL =
+  process.env.NEXT_PUBLIC_CONTACT_EMAIL || "info@skyinnhotel.com";
+
 const ContactsPage = () => {
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
     const formData = new FormData(form);
-    await fetch("/api/contact", {
-      method: "POST",
-      body: JSON.stringify(Object.fromEntries(formData)),
-      headers: { "Content-Type": "application/json" },
-    });
-    setSubmitted(true);
-    form.reset();
+    setError("");
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        body: JSON.stringify(Object.fromEntries(formData)),
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        setError(data?.error || "Your message could not be sent. Please try again.");
+        return;
+      }
+
+      setSubmitted(true);
+      form.reset();
+    } catch {
+      setError("Your message could not be sent. Please try again.");
+    }
   };
 
   return (
@@ -43,11 +60,11 @@ const ContactsPage = () => {
               <span>Accra, Ghana</span>
             </Link>
             <Link
-              href="mailto:hollali@example.com"
+              href={`mailto:${CONTACT_EMAIL}`}
               className="flex items-center gap-4 text-stellar-grey hover:text-brand transition-colors"
             >
               <BsFillSendFill className="text-brand text-xl shrink-0 icon-hover" />
-              <span>hollali@example.com</span>
+              <span>{CONTACT_EMAIL}</span>
             </Link>
             <Link
               href="tel:+233243658631"
@@ -108,6 +125,11 @@ const ContactsPage = () => {
                   required
                 />
               </div>
+              {error && (
+                <p className="text-red-500 text-sm" role="alert">
+                  {error}
+                </p>
+              )}
               <button
                 type="submit"
                 className="btn-primary px-8 py-3 text-sm"
