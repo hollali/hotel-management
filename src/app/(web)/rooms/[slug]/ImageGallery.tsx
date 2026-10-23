@@ -67,7 +67,7 @@ const ImageGallery = ({ coverImage, images = [], roomName }: Props) => {
       )}
 
       {/* Main Image */}
-      <div className="relative flex-1 h-[350px] sm:h-[400px] md:h-[480px] lg:h-[520px] overflow-hidden bg-beige">
+      <div className="relative lg:flex-1 h-[350px] sm:h-[400px] md:h-[480px] lg:h-[520px] overflow-hidden bg-beige">
         <Image
           key={activeIndex}
           src={activeSrc}
